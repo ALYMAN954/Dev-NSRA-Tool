@@ -1,0 +1,1088 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.json?v=4">
+<meta name="theme-color" content="#0E969C">
+<link rel="icon" href="icon-192.png?v=4">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=4">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="NSRA">
+<title>DEVICE NSRA Tool</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@500;600;700&display=swap">
+<style>
+/* Layout: calm single-column flow; sticky header, fixed bottom dock; practice mode pairs a sticky case card with the questions on wide screens. Fully mirrored in Arabic (RTL). */
+:root {
+  --bg:#EDF4F5; --bg2:#E0EDF0; --surface:#FFFFFF; --ink:#173540; --muted:#587480; --line:#CFE0E5;
+  --accent:#2F8A96; --accent-ink:#FFFFFF; --accent-soft:#DDF0F2; --lav:#7B77C4; --lav-soft:#EAE9F8;
+  --low:#2E8B63; --low-bg:#E0F2E9; --mod:#8F6B0C; --mod-bg:#FAF0D2; --high:#B85C22; --high-bg:#FCE6D6; --ext:#B83C54; --ext-bg:#F9DCE2;
+  --shadow:0 6px 24px rgba(23,53,64,.08);
+  --f-display:'Fraunces', 'Noto Naskh Arabic', Georgia, 'Times New Roman', serif;
+  --f-body:'Figtree', 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:#0E1A20; --bg2:#12222A; --surface:#172831; --ink:#E4EFF2; --muted:#93AEB8; --line:#27414C;
+    --accent:#6CC3CD; --accent-ink:#08242A; --accent-soft:#1C3A42; --lav:#A9A6EC; --lav-soft:#26254A;
+    --low:#6FD0A0; --low-bg:#17352A; --mod:#E5BE55; --mod-bg:#3A3015; --high:#F0A06A; --high-bg:#402B1B; --ext:#F2889C; --ext-bg:#43202A;
+    --shadow:0 6px 24px rgba(0,0,0,.35); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:#0E1A20; --bg2:#12222A; --surface:#172831; --ink:#E4EFF2; --muted:#93AEB8; --line:#27414C;
+  --accent:#6CC3CD; --accent-ink:#08242A; --accent-soft:#1C3A42; --lav:#A9A6EC; --lav-soft:#26254A;
+  --low:#6FD0A0; --low-bg:#17352A; --mod:#E5BE55; --mod-bg:#3A3015; --high:#F0A06A; --high-bg:#402B1B; --ext:#F2889C; --ext-bg:#43202A;
+  --shadow:0 6px 24px rgba(0,0,0,.35); color-scheme: dark;
+}
+:root[lang="ar"] {
+  --f-display:'Noto Naskh Arabic', 'Fraunces', Georgia, serif;
+  --f-body:'IBM Plex Sans Arabic', 'Figtree', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55; -webkit-text-size-adjust: 100%; }
+body::before { content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top,0px); z-index:30; background:var(--surface); }
+h1,h2,h3 { font-family: var(--f-display); font-weight: 600; text-wrap: balance; margin: 0; line-height: 1.2; }
+p { margin: 0; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--lav); outline-offset: 2px; }
+.wrap { width: 100%; max-width: 1060px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* header */
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--surface); border-bottom: 1px solid var(--line); }
+.bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 58px; }
+.brand { display: flex; align-items: center; gap: 10px; background: none; border: 0; padding: 6px 0; min-width: 0; text-align: start; }
+.brand-mark { width: 30px; height: 30px; flex: none; border-radius: 50%; background: radial-gradient(circle at 35% 35%, var(--accent-soft), var(--accent)); box-shadow: inset 0 0 0 5px var(--surface), 0 0 0 1.5px var(--accent); }
+.brand-name { font-family: var(--f-display); font-weight: 600; font-size: 1.05rem; white-space: nowrap; }
+.bar-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--surface); font-weight: 600; text-align: center; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.primary:hover { filter: brightness(1.06); }
+.btn.soft { background: var(--accent-soft); border-color: transparent; color: var(--ink); }
+.btn[disabled] { opacity: .5; cursor: not-allowed; }
+.btn.small { min-height: 38px; padding: 0 14px; font-size: .92rem; }
+
+main { padding-block: 22px 120px; }
+.view[hidden] { display: none !important; }
+
+/* home */
+.hero { position: relative; overflow: hidden; border-radius: 24px; padding: clamp(24px, 6vw, 56px); background: linear-gradient(135deg, var(--accent-soft), var(--lav-soft)); }
+.hero::before, .hero::after { content:""; position:absolute; border-radius:50%; background: var(--surface); opacity:.35; pointer-events:none; }
+.hero::before { width: 320px; height: 320px; inset-inline-end: -90px; top: -110px; }
+.hero::after { width: 190px; height: 190px; inset-inline-end: 60px; bottom: -90px; opacity:.25; }
+.hero > * { position: relative; z-index: 1; }
+.eyebrow { text-transform: uppercase; letter-spacing: .14em; font-size: .75rem; font-weight: 700; color: var(--muted); }
+:root[lang="ar"] .eyebrow, :root[lang="ar"] .field label, :root[lang="ar"] .compare small, :root[lang="ar"] .note small, :root[lang="ar"] .case .tag, :root[lang="ar"] .case .meta small { letter-spacing: 0; text-transform: none; }
+.hero h1 { font-size: clamp(1.9rem, 6.4vw, 3.3rem); margin-top: 10px; max-width: 18ch; }
+:root[lang="ar"] .hero h1 { max-width: 22ch; line-height: 1.4; }
+.hero h1 span { color: var(--accent); }
+.lead { max-width: 52ch; margin-top: 14px; color: var(--muted); font-size: 1.05rem; }
+.creator { display: inline-flex; align-items: center; gap: 10px; margin-top: 22px; padding: 8px 16px; padding-inline-start: 8px; border-radius: 999px; background: var(--surface); box-shadow: var(--shadow); font-weight: 600; }
+.creator i { font-style: normal; width: 30px; height: 30px; border-radius: 50%; background: var(--lav); color: #fff; display: grid; place-items: center; font-size: .8rem; }
+.creator small { display: block; font-weight: 500; color: var(--muted); font-size: .72rem; line-height: 1.1; }
+.creator b { display: block; line-height: 1.2; }
+.choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 20px; }
+.choice { text-align: start; background: var(--surface); border: 1.5px solid var(--line); border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 8px; box-shadow: var(--shadow); transition: transform .15s, border-color .15s; }
+.choice:hover { transform: translateY(-2px); border-color: var(--accent); }
+.choice h2 { font-size: 1.3rem; }
+.choice p { color: var(--muted); }
+.choice .go { margin-top: 6px; font-weight: 700; color: var(--accent); }
+.ladder-wrap { margin-top: 28px; }
+.ladder-wrap h3 { font-size: 1.05rem; margin-bottom: 10px; }
+.ladder { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.ladder div { padding: 12px 10px; border-radius: 12px; font-size: .86rem; line-height: 1.3; }
+.ladder b { display: block; font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+.ladder .l-low { background: var(--low-bg); color: var(--low); }
+.ladder .l-mod { background: var(--mod-bg); color: var(--mod); }
+.ladder .l-high { background: var(--high-bg); color: var(--high); }
+.ladder .l-ext { background: var(--ext-bg); color: var(--ext); }
+.foot { margin-top: 28px; text-align: center; color: var(--muted); font-size: .85rem; }
+.sitefoot { margin-top: 36px; padding-top: 18px; border-top: 1px solid var(--line); text-align: center; color: var(--muted); font-size: .85rem; line-height: 1.6; }
+.sitefoot b { color: var(--ink); }
+.credit { margin-top: 16px; text-align: center; color: var(--muted); font-size: .8rem; }
+.privacy { margin-top: 12px; color: var(--muted); font-size: .88rem; }
+.sendstatus { margin-top: 18px; padding: 12px 14px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-weight: 600; font-size: .92rem; }
+.sendstatus.sent { border-color: var(--low); color: var(--low); }
+.sendstatus.queued { border-color: var(--high); color: var(--high); }
+.sendstatus.missing, .sendstatus.off, .sendstatus.sending { color: var(--muted); }
+
+/* reminders */
+.due-card { margin-top: 20px; }
+.due-card h3 { font-size: 1.1rem; margin-bottom: 10px; }
+.due-list { display: grid; gap: 8px; }
+.due-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 10px 12px; border-radius: 14px; background: var(--bg); border: 1px solid var(--line); }
+.due-row .mrn { font-weight: 700; font-variant-numeric: tabular-nums; }
+.pill { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: .78rem; font-weight: 700; }
+.pill.low { background: var(--low-bg); color: var(--low); } .pill.mod { background: var(--mod-bg); color: var(--mod); }
+.pill.high { background: var(--high-bg); color: var(--high); } .pill.ext { background: var(--ext-bg); color: var(--ext); }
+.due-row .cd { margin-inline-start: auto; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--muted); }
+.over { color: var(--ext) !important; font-weight: 700; }
+.reassess { margin-top: 16px; padding: 12px 14px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; }
+.reassess b { font-family: var(--f-display); }
+.reassess .cd { margin-inline-start: auto; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
+.install { margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; justify-content: space-between; }
+.install p { color: var(--muted); font-size: .92rem; }
+
+/* page heads */
+.pagehead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+.pagehead h2 { font-size: clamp(1.4rem, 4.5vw, 2rem); }
+.pagehead p { color: var(--muted); margin-top: 4px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 20px; box-shadow: var(--shadow); }
+.fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+.field label { display: block; font-size: .8rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.field input { width: 100%; min-height: 48px; padding: 0 14px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--bg); color: var(--ink); font: inherit; }
+.field input:focus { outline: 3px solid var(--lav); outline-offset: 1px; border-color: var(--lav); }
+
+.crit-list { display: grid; gap: 16px; margin-top: 18px; }
+fieldset.crit { margin: 0; border: 1px solid var(--line); border-radius: 20px; padding: 16px; background: var(--surface); min-width: 0; }
+fieldset.crit legend { padding: 0 8px; font-family: var(--f-display); font-weight: 600; font-size: 1.1rem; }
+.opts { display: grid; gap: 8px; }
+.opt { position: relative; display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: center; padding: 10px 12px; min-height: 52px; border: 1.5px solid var(--line); border-radius: 14px; background: var(--bg); cursor: pointer; }
+.opt input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.opt .score { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; background: var(--surface); border: 1.5px solid var(--line); font-variant-numeric: tabular-nums; }
+.opt .txt { min-width: 0; overflow-wrap: anywhere; }
+.opt:hover { border-color: var(--accent); }
+.opt.sel { border-color: var(--accent); background: var(--accent-soft); }
+.opt.sel .score { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.opt:has(input:focus-visible) { outline: 3px solid var(--lav); outline-offset: 2px; }
+.opt.is-correct { border-color: var(--low); background: var(--low-bg); }
+.opt.is-correct .score { background: var(--low); color: var(--surface); border-color: var(--low); }
+.opt.is-wrong { border-color: var(--ext); background: var(--ext-bg); }
+.opt.is-wrong .score { background: var(--ext); color: var(--surface); border-color: var(--ext); }
+.locked .opt { cursor: default; }
+.verdict { margin-top: 10px; font-size: .9rem; font-weight: 600; }
+.verdict.ok { color: var(--low); } .verdict.no { color: var(--ext); }
+
+/* result */
+.result { margin-top: 22px; border-radius: 24px; padding: clamp(18px, 4vw, 30px); border: 2px solid var(--line); background: var(--surface); box-shadow: var(--shadow); }
+.result.pending { text-align: center; color: var(--muted); }
+.result.c-low { border-color: var(--low); background: linear-gradient(var(--low-bg), var(--surface) 60%); }
+.result.c-mod { border-color: var(--mod); background: linear-gradient(var(--mod-bg), var(--surface) 60%); }
+.result.c-high { border-color: var(--high); background: linear-gradient(var(--high-bg), var(--surface) 60%); }
+.result.c-ext { border-color: var(--ext); background: linear-gradient(var(--ext-bg), var(--surface) 60%); }
+.score-row { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; }
+.big { font-family: var(--f-display); font-size: clamp(3.4rem, 14vw, 5rem); line-height: 1; font-weight: 600; font-variant-numeric: tabular-nums; }
+.big small { font-size: .35em; color: var(--muted); font-family: var(--f-body); font-weight: 500; }
+.cat { font-family: var(--f-display); font-size: clamp(1.5rem, 6vw, 2.2rem); font-weight: 600; }
+.c-low .cat, .c-low .big { color: var(--low); } .c-mod .cat, .c-mod .big { color: var(--mod); }
+.c-high .cat, .c-high .big { color: var(--high); } .c-ext .cat, .c-ext .big { color: var(--ext); }
+.rangeline { color: var(--muted); font-weight: 600; font-variant-numeric: tabular-nums; }
+.result h3 { font-size: 1.15rem; margin: 22px 0 10px; }
+.guide { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.guide li { padding: 12px 14px; padding-inline-start: 40px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); position: relative; }
+.guide li::before { content: ""; position: absolute; inset-inline-start: 15px; top: 19px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+:root[lang="ar"] .guide li::before { top: 22px; }
+.breakdown { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin-top: 18px; }
+.breakdown div { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; display: flex; justify-content: space-between; gap: 8px; font-size: .9rem; }
+.breakdown b { font-variant-numeric: tabular-nums; }
+.compare { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 16px; }
+.compare div { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; }
+.compare small { display: block; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .07em; font-size: .7rem; }
+.compare b { font-family: var(--f-display); font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+.note { margin-top: 22px; padding: 18px 20px; border-radius: 18px; background: var(--lav-soft); }
+.note small { display: block; text-transform: uppercase; letter-spacing: .12em; font-weight: 700; font-size: .72rem; color: var(--muted); margin-bottom: 6px; }
+.note p { font-family: var(--f-display); font-size: 1.2rem; line-height: 1.5; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.copybox { width: 100%; margin-top: 12px; min-height: 120px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--bg); color: var(--ink); padding: 10px; font: .85rem/1.4 ui-monospace, Menlo, monospace; direction: ltr; text-align: left; }
+
+/* trend */
+.trend { margin-top: 18px; padding: 14px 16px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); }
+.trend h4 { margin: 0 0 8px; font-family: var(--f-display); font-size: 1.05rem; }
+.trend .msg { font-weight: 600; }
+.trend .msg.up { color: var(--ext); } .trend .msg.down { color: var(--low); } .trend .msg.same { color: var(--muted); }
+.trend .sub { color: var(--muted); font-size: .88rem; margin-top: 2px; }
+.bars { display: flex; align-items: flex-end; gap: 8px; height: 96px; margin-top: 12px; }
+.bars .b { flex: 1 1 0; max-width: 56px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 3px; height: 100%; min-width: 0; }
+.bars .b i { display: block; width: 100%; border-radius: 6px 6px 2px 2px; min-height: 4px; }
+.bars .b span { font-size: .8rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.bars .b small { font-size: .66rem; color: var(--muted); white-space: nowrap; }
+.bars .low i { background: var(--low); } .bars .mod i { background: var(--mod); } .bars .high i { background: var(--high); } .bars .ext i { background: var(--ext); }
+.bars .b.now i { outline: 2px solid var(--ink); outline-offset: 1px; }
+
+/* dashboard */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; }
+.tile small { display: block; color: var(--muted); font-weight: 700; font-size: .75rem; }
+.tile b { font-family: var(--f-display); font-size: 2rem; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.panel { margin-top: 16px; }
+.panel h3 { font-size: 1.1rem; margin-bottom: 12px; }
+.stack { display: flex; height: 26px; border-radius: 8px; overflow: hidden; background: var(--bg); }
+.stack i { display: block; min-width: 0; }
+.stack .low, .legend .low i { background: var(--low); } .stack .mod, .legend .mod i { background: var(--mod); }
+.stack .high, .legend .high i { background: var(--high); } .stack .ext, .legend .ext i { background: var(--ext); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 10px; font-size: .88rem; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 12px; height: 12px; border-radius: 4px; display: inline-block; }
+.hbar { display: grid; grid-template-columns: minmax(90px, 150px) 1fr 44px; gap: 10px; align-items: center; margin-top: 8px; font-size: .9rem; }
+.hbar .track { height: 12px; border-radius: 6px; background: var(--bg); overflow: hidden; }
+.hbar .track i { display: block; height: 100%; background: var(--accent); border-radius: 6px; }
+.hbar b { text-align: end; font-variant-numeric: tabular-nums; }
+.days { display: flex; align-items: flex-end; gap: 3px; height: 110px; }
+.days i { flex: 1 1 0; min-width: 0; background: var(--accent); border-radius: 3px 3px 1px 1px; min-height: 2px; opacity: .85; }
+.days i.zero { background: var(--line); }
+.axis { display: flex; justify-content: space-between; color: var(--muted); font-size: .75rem; margin-top: 6px; }
+.dnote { text-align: center; color: var(--muted); padding: 24px 8px; }
+
+/* practice */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 0; }
+.chip { min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--surface); font-weight: 600; font-size: .92rem; }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.practice-grid { display: grid; gap: 18px; margin-top: 18px; }
+.case { background: var(--surface); border: 1.5px solid var(--accent); border-radius: 22px; padding: 20px; box-shadow: var(--shadow); }
+.case .tag { display: inline-block; padding: 4px 12px; border-radius: 999px; background: var(--accent-soft); font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.case h3 { font-size: 1.4rem; margin: 10px 0 12px; }
+.case .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-bottom: 14px; }
+.case .meta div { background: var(--bg); border-radius: 12px; padding: 8px 12px; }
+.case .meta small { display: block; color: var(--muted); font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; }
+.case .meta b { font-variant-numeric: tabular-nums; }
+.case p + p { margin-top: 10px; }
+@media (min-width: 900px) {
+  .practice-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: start; }
+  .case-col { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 76px); max-height: calc(100vh - 160px); overflow-y: auto; }
+  .case-btn { display: none !important; }
+  .practice-grid .crit-list { margin-top: 0; }
+}
+
+/* dock + sheet */
+.dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 25; background: var(--surface); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.dock .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 60px; }
+.dock .stat { font-weight: 600; font-variant-numeric: tabular-nums; min-width: 0; }
+.dock .stat small { display: block; color: var(--muted); font-weight: 500; font-size: .78rem; }
+.dock .btns { display: flex; gap: 8px; }
+.sheet { position: fixed; inset: 0; z-index: 40; background: rgba(8,24,30,.55); display: flex; align-items: flex-end; }
+.sheet[hidden] { display: none !important; }
+.sheet-body { width: 100%; max-height: 82%; overflow-y: auto; background: var(--surface); border-radius: 24px 24px 0 0; padding: 18px max(16px, env(safe-area-inset-left, 0px)) calc(18px + env(safe-area-inset-bottom, 0px)); }
+.sheet-body .case { border: 0; box-shadow: none; padding: 0; }
+.sheet-top { display: flex; justify-content: flex-end; margin-bottom: 6px; }
+
+@media (max-width: 520px) {
+  .brand-name { font-size: .92rem; }
+  .ladder { grid-template-columns: repeat(2, 1fr); }
+  .hbar { grid-template-columns: 90px 1fr 40px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+
+
+<header class="bar">
+  <div class="wrap">
+    <button class="brand" id="brand" data-i18n-aria="goHome"><span class="brand-mark"></span><span class="brand-name">DEVICE NSRA</span></button>
+    <div class="bar-actions">
+      <button class="btn small" id="homeTop" hidden data-i18n="home"></button>
+      <button class="btn small" id="langBtn" data-i18n-aria="langAria"></button>
+      <button class="btn small" id="themeBtn" data-i18n-aria="themeAria"></button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- HOME -->
+  <section class="view" id="view-home">
+    <div class="hero">
+      <div class="eyebrow" data-i18n="eyebrow"></div>
+      <h1 data-i18n-html="h1"></h1>
+      <p class="lead" data-i18n="lead"></p>
+      <div class="creator"><i>AE</i><span><small data-i18n="createdBy"></small><b>Abdallah Elaydi</b></span></div>
+    </div>
+
+    <div class="card install" id="installCard" hidden>
+      <div><b data-i18n="instT"></b><p id="instTxt"></p></div>
+      <button class="btn primary small" id="instBtn" hidden data-i18n="instBtn"></button>
+    </div>
+
+    <div class="card due-card" id="dueCard" hidden>
+      <h3 data-i18n="dueT"></h3>
+      <div class="due-list" id="dueList"></div>
+    </div>
+
+    <div class="choices">
+      <button class="choice" id="goReal">
+        <h2 data-i18n="realT"></h2><p data-i18n="realP"></p><span class="go" data-i18n="realGo"></span>
+      </button>
+      <button class="choice" id="goPractice">
+        <h2 data-i18n="pracT"></h2><p data-i18n="pracP"></p><span class="go" data-i18n="pracGo"></span>
+      </button>
+      <button class="choice" id="goDash">
+        <h2 data-i18n="dashT"></h2><p data-i18n="dashP"></p><span class="go" data-i18n="dashGo"></span>
+      </button>
+    </div>
+    <div class="ladder-wrap">
+      <h3 data-i18n="ladderT"></h3>
+      <div class="ladder">
+        <div class="l-low"><b>≤ 8</b><span data-i18n="catLow"></span></div>
+        <div class="l-mod"><b>9 – 16</b><span data-i18n="catMod"></span></div>
+        <div class="l-high"><b>17 – 24</b><span data-i18n="catHigh"></span></div>
+        <div class="l-ext"><b>25 – 32</b><span data-i18n="catExt"></span></div>
+      </div>
+    </div>
+    <p class="foot" data-i18n="foot"></p>
+  </section>
+
+  <!-- REAL -->
+  <section class="view" id="view-real" hidden>
+    <div class="pagehead">
+      <div><h2 data-i18n="realH"></h2><p data-i18n="realSub"></p></div>
+      <button class="btn small" data-home data-i18n="home"></button>
+    </div>
+    <div class="card">
+      <div class="fields">
+        <div class="field"><label for="babyName" data-i18n="babyName"></label><input id="babyName" type="text" autocomplete="off" data-i18n-ph="phBaby"></div>
+        <div class="field"><label for="motherName" data-i18n="motherName"></label><input id="motherName" type="text" autocomplete="off" data-i18n-ph="phMother"></div>
+        <div class="field"><label for="mrn">MRN</label><input id="mrn" type="text" inputmode="numeric" autocomplete="off" data-i18n-ph="phMrn"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <div class="fields">
+        <div class="field"><label for="nurseName" data-i18n="nurseName"></label><input id="nurseName" type="text" autocomplete="name" data-i18n-ph="phNurse"></div>
+        <div class="field"><label for="empId" data-i18n="empId"></label><input id="empId" type="text" autocomplete="off" data-i18n-ph="phEmp"></div>
+      </div>
+      <p class="privacy" data-i18n="privacy"></p>
+    </div>
+    <div class="crit-list" id="realCrit"></div>
+    <div id="realResult"></div>
+  </section>
+
+  <!-- PRACTICE -->
+  <section class="view" id="view-practice" hidden>
+    <div class="pagehead">
+      <div><h2 data-i18n="pracH"></h2><p data-i18n="pracSub"></p></div>
+      <button class="btn small" data-home data-i18n="home"></button>
+    </div>
+    <div class="card">
+      <div class="eyebrow" data-i18n="diffT"></div>
+      <div class="chips" id="diffChips" role="group" data-i18n-aria="diffT">
+        <button class="chip" data-d="any" aria-pressed="true" data-i18n="dMixed"></button>
+        <button class="chip" data-d="low" aria-pressed="false" data-i18n="dLow"></button>
+        <button class="chip" data-d="mod" aria-pressed="false" data-i18n="dMod"></button>
+        <button class="chip" data-d="high" aria-pressed="false" data-i18n="dHigh"></button>
+        <button class="chip" data-d="ext" aria-pressed="false" data-i18n="dExt"></button>
+      </div>
+    </div>
+    <div class="practice-grid">
+      <div class="case-col" id="caseCol"></div>
+      <div>
+        <div class="crit-list" id="pracCrit"></div>
+        <div id="pracResult"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section class="view" id="view-dash" hidden>
+    <div class="pagehead">
+      <div><h2 data-i18n="dashH"></h2><p data-i18n="dashSub"></p></div>
+      <div class="actions" style="margin:0">
+        <button class="btn small soft" id="dashRefresh" data-i18n="refresh"></button>
+        <button class="btn small" data-home data-i18n="home"></button>
+      </div>
+    </div>
+    <div id="dashBody"></div>
+  </section>
+
+  <footer class="sitefoot">
+    <div>DEVICE Neonatal Skin Risk Assessment (NSRA) Tool</div>
+    <div><span data-i18n="createdBy"></span> <b>Abdallah Elaydi</b></div>
+    <div>© 2026 Abdallah Elaydi. All rights reserved.</div>
+  </footer>
+
+</main>
+
+<div class="dock" id="dock" hidden>
+  <div class="wrap">
+    <div class="stat" id="dockStat"></div>
+    <div class="btns">
+      <button class="btn small soft case-btn" id="caseBtn" hidden data-i18n="showCase"></button>
+    </div>
+  </div>
+</div>
+
+<div class="sheet" id="sheet" hidden>
+  <div class="sheet-body" role="dialog" data-i18n-aria="caseAria">
+    <div class="sheet-top"><button class="btn small" id="sheetClose" data-i18n="close"></button></div>
+    <div id="sheetCase"></div>
+  </div>
+</div>
+
+<script>
+/* Results receiver: paste your Google Apps Script web app URL between the quotes. */
+var NSRA_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzGvq4w6NEfx10_iDUS21f9aFH9Np3hxmaxsYcZsMsOQDoefxnB64q_leudWyLQv0kV2g/exec';
+var NSRA_PWA = true;
+(function () {
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var LS = {
+    get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  };
+  function jget(k, d) { try { var v = JSON.parse(LS.get(k)); return v == null ? d : v; } catch (e) { return d; } }
+  function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
+  function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  /* ---------- language ---------- */
+  var lang = LS.get('nsra-lang') === 'ar' ? 'ar' : 'en';
+  var LI = function () { return lang === 'ar' ? 1 : 0; };
+  var T = {
+    goHome: ['Go to home', 'الصفحة الرئيسية'],
+    home: ['Back to Home', 'العودة للرئيسية'],
+    langAria: ['Switch language', 'تبديل اللغة'],
+    themeAria: ['Switch between day and night mode', 'التبديل بين الوضع النهاري والليلي'],
+    langBtn: ['العربية', 'English'],
+    night: ['Night mode', 'الوضع الليلي'], day: ['Day mode', 'الوضع النهاري'],
+    eyebrow: ['Neonatal Intensive Care · Prematurity Unit', 'العناية المركزة لحديثي الولادة · قسم الخدّج'],
+    h1: ['DEVICE Neonatal <span>Skin Risk</span> Assessment (NSRA) Tool', 'أداة DEVICE لتقييم <span>مخاطر الجلد</span> لحديثي الولادة (NSRA)'],
+    lead: ['Score eight criteria, see the risk category at once, and follow the matching assessment, implementation and documentation guidelines.', 'قيّم ثمانية معايير، وشاهد فئة الخطورة فوراً، واتبع إرشادات التقييم والتنفيذ والتوثيق المناسبة لها.'],
+    createdBy: ['Program created by', 'منشئ البرنامج'],
+    realT: ['Assess a patient', 'تقييم مريض'],
+    realP: ["Enter the baby's name, mother's name and MRN, then score the eight criteria for your real patient.", 'أدخل اسم الطفل واسم الأم ورقم الملف، ثم قيّم المعايير الثمانية لمريضك الفعلي.'],
+    realGo: ['Start assessment →', 'ابدأ التقييم ←'],
+    pracT: ['Practice with case scenarios', 'تدرّب بحالات تجريبية'],
+    pracP: ['Read a clinical case, score it yourself, then check your answers. New cases are generated every time, from low risk to extreme risk.', 'اقرأ حالة سريرية، قيّمها بنفسك، ثم تحقق من إجاباتك. تُنشأ حالات جديدة في كل مرة، من خطورة منخفضة إلى شديدة.'],
+    pracGo: ['Start practice →', 'ابدأ التدريب ←'],
+    dashT: ['Unit dashboard', 'لوحة نتائج القسم'],
+    dashP: ['Totals, risk distribution and the criteria that raise scores most, from all submitted assessments.', 'الإجماليات وتوزيع المخاطر وأكثر المعايير رفعاً للدرجة، من كل التقييمات المرسلة.'],
+    dashGo: ['Open dashboard →', 'افتح اللوحة ←'],
+    ladderT: ['Total score and risk category (8 criteria, 8 to 32 points)', 'المجموع وفئة الخطورة (8 معايير، من 8 إلى 32 درجة)'],
+    catLow: ['Low Risk', 'خطورة منخفضة'], catMod: ['Moderate Risk', 'خطورة متوسطة'], catHigh: ['High Risk', 'خطورة عالية'], catExt: ['Extreme Risk', 'خطورة شديدة'],
+    foot: ['Each criterion scores 1 (lowest risk) to 4 (highest risk). Record the total on the NSRA Score Sheet.', 'كل معيار يأخذ من 1 (أقل خطورة) إلى 4 (أعلى خطورة). سجّل المجموع في ورقة درجات NSRA.'],
+    instT: ['Install on your phone', 'ثبّت التطبيق على جوالك'],
+    instBtn: ['Install app', 'تثبيت التطبيق'],
+    instIos: ['In Safari, tap Share, then "Add to Home Screen".', 'من متصفح Safari اضغط زر المشاركة ثم "إضافة إلى الشاشة الرئيسية".'],
+    instGen: ['Add this page to your home screen to open it like an app, even with a weak connection.', 'أضف هذه الصفحة إلى الشاشة الرئيسية لتفتحها كتطبيق، حتى مع ضعف الاتصال.'],
+    dueT: ['Reassessments due on this device', 'إعادة التقييم المطلوبة على هذا الجهاز'],
+    overdue: ['Overdue', 'متأخر'],
+    dueIn: [function (d) { return 'Due in ' + d; }, function (d) { return 'بعد ' + d; }],
+    remove: ['Done', 'تم'],
+    hUnit: ['h', 'س'], mUnit: ['m', 'د'],
+    realH: ['Patient assessment', 'تقييم المريض'],
+    realSub: ['Fill in the patient details, then choose one option for each criterion.', 'أدخل بيانات المريض ثم اختر خياراً واحداً لكل معيار.'],
+    babyName: ["Baby's name", 'اسم الطفل'], motherName: ["Mother's name", 'اسم الأم'],
+    phBaby: ['e.g. Baby Layla', 'مثال: الطفلة ليلى'], phMother: ["Mother's full name", 'الاسم الكامل للأم'], phMrn: ['Medical record number', 'رقم الملف الطبي'],
+    nurseName: ['Nurse name', 'اسم الممرض/ة'], empId: ['Employee ID', 'الرقم الوظيفي'],
+    phNurse: ['Your full name', 'اسمك الكامل'], phEmp: ['Your employee number', 'رقمك الوظيفي'],
+    privacy: ["When you finish, your name, employee ID, the patient MRN and the scores are sent to the unit record. The baby's name and the mother's name stay on this device and are never sent.", 'عند الانتهاء يُرسل اسمك ورقمك الوظيفي ورقم ملف المريض والدرجات إلى سجل القسم. اسم الطفل واسم الأم يبقيان على هذا الجهاز ولا يُرسلان أبداً.'],
+    result: ['Result', 'النتيجة'],
+    pending: [function (n) { return n + ' of 8 criteria selected. The score, category and guidelines appear here when all eight are chosen.'; }, function (n) { return 'تم اختيار ' + n + ' من 8 معايير. تظهر الدرجة والفئة والإرشادات هنا عند اختيار الثمانية.'; }],
+    scoreRange: ['Score range', 'نطاق الدرجة'],
+    addIds: ["Add the baby's name and MRN above to complete the record.", 'أضف اسم الطفل ورقم الملف أعلاه لإكمال السجل.'],
+    lBaby: ['Baby', 'الطفل'], lMother: ['Mother', 'الأم'],
+    guideT: ['Assessment, implementation and documentation guidelines', 'إرشادات التقييم والتنفيذ والتوثيق'],
+    recordNote: ['Record the total score on the NSRA Score Sheet.', 'سجّل المجموع في ورقة درجات NSRA.'],
+    reT: ['Reassess skin', 'إعادة تقييم الجلد'],
+    freqLow: ['daily', 'يومياً'], freqMod: ['every 6–8 hours', 'كل 6–8 ساعات'], freqHigh: ['every 4–6 hours', 'كل 4–6 ساعات'], freqExt: ['every 2–4 hours', 'كل 2–4 ساعات'],
+    noteLabel: ['A note for you', 'رسالة لك'],
+    copySum: ['Copy summary', 'نسخ الملخص'], copied: ['Copied', 'تم النسخ'],
+    newAssess: ['New assessment', 'تقييم جديد'],
+    copyManual: ['Select all and copy manually.', 'حدد الكل وانسخ يدوياً.'],
+    credit: ['Program created by Abdallah Elaydi', 'منشئ البرنامج: Abdallah Elaydi'],
+    stMissing: ['Enter your name, employee ID and the patient MRN to send this result to the unit record.', 'أدخل اسمك ورقمك الوظيفي ورقم ملف المريض ليُرسل هذا التقييم إلى سجل القسم.'],
+    stSending: ['Sending result…', 'جارٍ إرسال النتيجة…'],
+    stSent: ['Result sent to the unit record.', 'تم إرسال النتيجة إلى سجل القسم.'],
+    stQueued: ['Saved on this device. It will be sent automatically when the internet connection returns.', 'تم الحفظ على هذا الجهاز، وسيُرسل تلقائياً عند عودة الاتصال بالإنترنت.'],
+    stOff: ['Result sending is not connected yet.', 'إرسال النتائج غير مفعّل بعد.'],
+    retry: ['Retry now', 'أعد المحاولة الآن'],
+    trendT: ['Score trend for this MRN', 'اتجاه الدرجة لهذا الملف'],
+    trendLoad: ['Looking for earlier assessments…', 'جارٍ البحث عن تقييمات سابقة…'],
+    trendNoMrn: ['Enter the MRN to compare with earlier assessments.', 'أدخل رقم الملف للمقارنة مع التقييمات السابقة.'],
+    trendFirst: ['No earlier assessment found for this MRN. This is the first one on record.', 'لا يوجد تقييم سابق لهذا الملف. هذا هو أول تقييم مسجل.'],
+    trendUp: [function (d, p) { return 'Score rising: +' + d + ' since the previous assessment (' + p + ').'; }, function (d, p) { return 'الدرجة في ارتفاع: +' + d + ' منذ التقييم السابق (' + p + ').'; }],
+    trendDown: [function (d, p) { return 'Score falling: ' + d + ' since the previous assessment (' + p + ').'; }, function (d, p) { return 'الدرجة في انخفاض: ' + d + ' منذ التقييم السابق (' + p + ').'; }],
+    trendSame: [function (p) { return 'Score unchanged since the previous assessment (' + p + ').'; }, function (p) { return 'الدرجة دون تغيير منذ التقييم السابق (' + p + ').'; }],
+    trendNow: ['Now', 'الآن'],
+    trendLocal: ['Showing assessments saved on this device only.', 'تُعرض التقييمات المحفوظة على هذا الجهاز فقط.'],
+    pracH: ['Practice mode', 'وضع التدريب'],
+    pracSub: ['Read the case, score all eight criteria, then check your answers.', 'اقرأ الحالة، وقيّم المعايير الثمانية، ثم تحقق من إجاباتك.'],
+    diffT: ['Case difficulty', 'مستوى الحالة'],
+    dMixed: ['Mixed', 'متنوع'], dLow: ['Low', 'منخفض'], dMod: ['Moderate', 'متوسط'], dHigh: ['High', 'عالٍ'], dExt: ['Extreme', 'شديد'],
+    caseTag: [function (n) { return 'Case scenario #' + n; }, function (n) { return 'الحالة رقم ' + n; }],
+    sex: ['Sex', 'الجنس'], girl: ['Girl', 'أنثى'], boy: ['Boy', 'ذكر'],
+    curGa: ['Current gestational age', 'العمر الحملي الحالي'], dol: ['Day of life', 'يوم العمر'], weight: ['Weight', 'الوزن'], g: ['g', 'غ'],
+    mrnL: ['MRN', 'رقم الملف'], motherL: ['Mother', 'الأم'], mrs: ['Mrs.', 'السيدة'],
+    weeks: ['weeks', 'أسبوعاً'],
+    newCase: ['New case', 'حالة جديدة'],
+    check: ['Check my answers', 'تحقق من إجاباتي'],
+    chooseAll: [function (n) { return n + ' of 8 criteria selected. Choose all eight to check.'; }, function (n) { return 'تم اختيار ' + n + ' من 8 معايير. اختر الثمانية للتحقق.'; }],
+    ready: ['Ready to check.', 'جاهز للتحقق.'],
+    ok: ['Correct', 'صحيح'],
+    notQuite: [function (n) { return 'Not quite. The case supports a score of ' + n + '.'; }, function (n) { return 'ليس تماماً. الحالة تدعم الدرجة ' + n + '.'; }],
+    correctTotal: [function (r) { return 'Correct total for this case · range ' + r; }, function (r) { return 'المجموع الصحيح لهذه الحالة · النطاق ' + r; }],
+    critCorrect: ['Criteria correct', 'معايير صحيحة'], yourTotal: ['Your total', 'مجموعك'], yourCat: ['Your category', 'فئتك'],
+    sameCat: ['Your total lands in the correct risk category.', 'مجموعك يقع في فئة الخطورة الصحيحة.'],
+    diffCat: ['Your total falls in a different category from the correct one.', 'مجموعك يقع في فئة مختلفة عن الفئة الصحيحة.'],
+    session: [function (r, n) { return 'Session so far: ' + r + ' of ' + (n * 8) + ' criteria correct across ' + n + ' case' + (n > 1 ? 's' : '') + '.'; }, function (r, n) { return 'حصيلة الجلسة: ' + r + ' من ' + (n * 8) + ' معياراً صحيحاً في ' + n + ' حالة.'; }],
+    nextCase: ['Next case', 'الحالة التالية'],
+    showCase: ['Show case', 'عرض الحالة'], close: ['Close', 'إغلاق'], caseAria: ['Case scenario', 'الحالة التجريبية'],
+    dockSel: [function (n) { return n + ' of 8 selected'; }, function (n) { return 'تم اختيار ' + n + ' من 8'; }],
+    dockChoose: ['Choose an option for each criterion', 'اختر خياراً لكل معيار'],
+    dockRun: [function (s) { return 'Running score ' + s; }, function (s) { return 'المجموع الحالي ' + s; }],
+    dockCase: [function (n, s) { return 'Case #' + n + ' · running score ' + s; }, function (n, s) { return 'الحالة ' + n + ' · المجموع الحالي ' + s; }],
+    dockChecked: ['Case checked', 'تم تصحيح الحالة'], dockReview: ['Review your answers above', 'راجع إجاباتك أعلاه'],
+    dashH: ['Unit dashboard', 'لوحة نتائج القسم'],
+    dashSub: ['Anonymous totals from all submitted assessments. No names are shown.', 'إجماليات مجهولة من كل التقييمات المرسلة. لا تظهر أي أسماء.'],
+    refresh: ['Refresh', 'تحديث'],
+    dOff: ['The dashboard works after the results link is connected in the GitHub version.', 'تعمل اللوحة بعد ربط رابط النتائج في نسخة GitHub.'],
+    dLoad: ['Loading results…', 'جارٍ تحميل النتائج…'],
+    dFail: ['Could not load results. Check the connection and that the Apps Script was updated, then press Refresh.', 'تعذّر تحميل النتائج. تأكد من الاتصال ومن تحديث كود Apps Script ثم اضغط تحديث.'],
+    dNone: ['No assessments have been submitted yet.', 'لا توجد تقييمات مرسلة بعد.'],
+    dTotal: ['Assessments', 'عدد التقييمات'], dAvg: ['Average score', 'متوسط الدرجة'], dNurses: ['Nurses', 'عدد الممرضين'], dMrns: ['Patients (MRN)', 'عدد المرضى'],
+    dRisk: ['Risk distribution', 'توزيع المخاطر'],
+    dCrit: ['Average score per criterion (1 to 4)', 'متوسط الدرجة لكل معيار (من 1 إلى 4)'],
+    dDays: ['Assessments per day, last 30 days', 'التقييمات لكل يوم، آخر 30 يوماً'],
+    sumTitle: ['NSRA Summary', 'ملخص تقييم NSRA'], sumTotal: ['Total score', 'المجموع'], sumDate: ['Date', 'التاريخ']
+  };
+  function t(k, a, b) { var v = T[k] ? T[k][LI()] : k; return typeof v === 'function' ? v(a, b) : v; }
+
+  /* ---------- NSRA data ---------- */
+  var CRITERIA = [
+    { id: 'ga', name: ['Current Gestational Age', 'العمر الحملي الحالي'], short: ['Gestational age', 'العمر الحملي'], opts: [
+      [4, ['Neonate &lt;28 weeks', 'رضيع أقل من 28 أسبوعاً']], [3, ['Neonate &gt;28 weeks and &lt;33 weeks', 'رضيع أكثر من 28 أسبوعاً وأقل من 33 أسبوعاً']], [2, ['Neonate &gt;33 weeks and &lt;38 weeks', 'رضيع أكثر من 33 أسبوعاً وأقل من 38 أسبوعاً']], [1, ['Neonate &gt;38 weeks', 'رضيع أكثر من 38 أسبوعاً']] ] },
+    { id: 'sen', name: ['Sensory Perception', 'الإدراك الحسي'], short: ['Sensory', 'الإدراك الحسي'], opts: [
+      [4, ['Diminished level of consciousness / heavily sedated.', 'انخفاض مستوى الوعي / تخدير شديد.']], [3, ['Oversensitive to noise, light and touch.', 'فرط الحساسية للضجيج والضوء واللمس.']], [2, ['Easily agitated but calms with comfort measures.', 'سهل الانفعال لكنه يهدأ بإجراءات الراحة.']], [1, ['Age-appropriate responses to stimuli, alert.', 'استجابات مناسبة للعمر للمنبهات، يقظ.']] ] },
+    { id: 'act', name: ['Activity / Mobility', 'النشاط / الحركة'], short: ['Activity', 'النشاط'], opts: [
+      [4, ['Does not make the slightest change in position – full assistance required.', 'لا يغيّر وضعيته إطلاقاً، ويحتاج مساعدة كاملة.']], [3, ['Makes occasional slight changes in body or extremity position.', 'يغيّر وضعية الجسم أو الأطراف تغييراً بسيطاً من حين لآخر.']], [2, ['Makes frequent changes in body or extremity position, for example turns head.', 'يغيّر وضعية الجسم أو الأطراف بشكل متكرر، مثل تحريك الرأس.']], [1, ['Makes major and frequent changes in position, moving all extremities, turns head.', 'يغيّر وضعيته بشكل كبير ومتكرر، ويحرك كل أطرافه ويدير رأسه.']] ] },
+    { id: 'moi', name: ['Moisture', 'الرطوبة'], short: ['Moisture', 'الرطوبة'], opts: [
+      [4, ['Constantly moist due to high humidity / urine / wound / stoma.', 'رطب باستمرار بسبب الرطوبة العالية / البول / جرح / فغر (stoma).']], [3, ['Skin often moist – linen needs to be changed once per 8 hours.', 'الجلد رطب غالباً، ويحتاج تغيير الشراشف مرة كل 8 ساعات.']], [2, ['Skin occasionally moist – needs linen change once per 12 hours.', 'الجلد رطب أحياناً، ويحتاج تغيير الشراشف مرة كل 12 ساعة.']], [1, ['Skin usually dry, routine nappy changes and linen once per day.', 'الجلد جاف عادةً، وتغيير الحفاضات والشراشف الروتيني مرة في اليوم.']] ] },
+    { id: 'res', name: ['Respiratory Support', 'الدعم التنفسي'], short: ['Respiratory', 'التنفس'], opts: [
+      [4, ['Intubated and ventilated.', 'مُنَبَّب وعلى جهاز التنفس الصناعي.']], [3, ['BiPAP / CPAP.', 'BiPAP / CPAP.']], [2, ['High flow and/or low flow.', 'أكسجين عالي التدفق و/أو منخفض التدفق.']], [1, ['No respiratory support.', 'بدون دعم تنفسي.']] ] },
+    { id: 'ski', name: ['Skin Integrity', 'سلامة الجلد'], short: ['Skin', 'الجلد'], opts: [
+      [4, ['Extensive loss of skin integrity / wound / pressure injury / medical devices.', 'فقدان واسع لسلامة الجلد / جرح / إصابة ضغط / أجهزة طبية.']], [3, ['Localized loss of skin integrity / broken area / edema.', 'فقدان موضعي لسلامة الجلد / منطقة متقرحة / وذمة.']], [2, ['Minor skin irritation / redness.', 'تهيّج جلدي بسيط / احمرار.']], [1, ['Skin integrity intact.', 'الجلد سليم.']] ] },
+    { id: 'blo', name: ['Blood Collection', 'سحب الدم'], short: ['Blood', 'سحب الدم'], opts: [
+      [4, ['Many attempts for IV access – cannulation / long line / bloods / arterial line.', 'محاولات كثيرة للوصول الوريدي – قسطرة / خط طويل / تحاليل / خط شرياني.']], [3, ['Venipunctures resulting in large bruise around site of insertion / edema.', 'بزل وريدي نتج عنه كدمة كبيرة أو وذمة حول موضع الإدخال.']], [2, ['Heel pricks &gt;3 in 24-hour period.', 'أكثر من 3 وخزات كعب خلال 24 ساعة.']], [1, ['Blood sampling daily or weekly.', 'سحب الدم يومياً أو أسبوعياً.']] ] },
+    { id: 'nut', name: ['Nutrition', 'التغذية'], short: ['Nutrition', 'التغذية'], opts: [
+      [4, ['TPN / lipids / IV fluids / does not tolerate feeds / IV medications.', 'تغذية وريدية كاملة (TPN) / دهون / سوائل وريدية / لا يتحمل التغذية / أدوية وريدية.']], [3, ['TPN / lipids / IV fluids / trophic feeds.', 'TPN / دهون / سوائل وريدية / تغذية تحفيزية (trophic).']], [2, ['TPN / lipids / IV fluids, with tube feeds.', 'TPN / دهون / سوائل وريدية مع تغذية بالأنبوب.']], [1, ['OGT / NGT full feeds.', 'تغذية كاملة عبر أنبوب OGT / NGT.']] ] }
+  ];
+
+  var GUIDE = {
+    low: { key: 'low', range: '≤ 8', label: 'catLow', freq: 'freqLow', hrs: 24, items: [
+      ['Perform and document standard daily assessment of skin integrity.', 'إجراء وتوثيق تقييم يومي معتاد لسلامة الجلد.'],
+      ['Reassess immediately if condition changes.', 'إعادة التقييم فوراً عند تغيّر الحالة.'],
+      ['Educate parents/caregivers on pressure injury prevention.', 'تثقيف الوالدين/مقدمي الرعاية حول الوقاية من إصابات الضغط.'] ] },
+    mod: { key: 'mod', range: '9 – 16', label: 'catMod', freq: 'freqMod', hrs: 6, items: [
+      ['Reassess and document skin integrity and reposition the neonate\'s body every <strong>6–8 hours.</strong>', 'إعادة تقييم وتوثيق سلامة الجلد وتغيير وضعية جسم الرضيع كل <strong>6–8 ساعات.</strong>'],
+      ['Reposition and check the fit of CPAP/NIPPV equipment every <strong>2–4 hours</strong>. Ensure straps are tight enough to maintain a therapeutic seal but loose enough to slide one finger underneath.', 'تغيير وضعية معدات CPAP/NIPPV والتحقق من ملاءمتها كل <strong>2–4 ساعات</strong>. تأكد أن الأحزمة محكمة بما يكفي للحفاظ على إغلاق علاجي، وفضفاضة بما يسمح بإدخال إصبع واحد تحتها.'],
+      ['If a prophylactic hydrocolloid or silicone foam dressing (e.g., thin Mepilex) is over high-pressure zones, <strong>do not routinely peel it off every 2 hours to inspect underlying skin</strong>. Instead, ease device tension and inspect around the edges for spreading redness, pooling moisture, or sliding.', 'إذا كانت هناك ضمادة وقائية هيدروكولويد أو رغوة سيليكون (مثل Mepilex الرقيق) فوق مناطق الضغط العالي، <strong>فلا تنزعها روتينياً كل ساعتين لفحص الجلد تحتها</strong>. بدلاً من ذلك، خفّف شدّ الجهاز وافحص الحواف بحثاً عن احمرار منتشر أو تجمع رطوبة أو انزلاق.'],
+      ['Observe IV lines hourly for integrity, perfusion, and placement. Keep skin clean/dry, maintaining hydration, nutrition, and oxygenation.', 'راقب الخطوط الوريدية كل ساعة للتأكد من سلامتها والتروية والموضع. حافظ على نظافة الجلد وجفافه، وعلى الترطيب والتغذية والأكسجة.'],
+      ['Educate parents/caregivers on pressure injury prevention.', 'تثقيف الوالدين/مقدمي الرعاية حول الوقاية من إصابات الضغط.'] ] },
+    high: { key: 'high', range: '17 – 24', label: 'catHigh', freq: 'freqHigh', hrs: 4, items: [
+      ['Reposition both the neonate and the devices at least every 4–6 hours. <strong>Regularly rotate contact points</strong> (e.g., pulse oximeter sensors) and alternate between nasal masks and nasal prongs every <strong>4 to 6 hours</strong>.', 'غيّر وضعية الرضيع والأجهزة معاً كل 4–6 ساعات على الأقل. <strong>بدّل مواضع التلامس بانتظام</strong> (مثل حساس قياس الأكسجين)، وبدّل بين القناع الأنفي والشوكات الأنفية كل <strong>4 إلى 6 ساعات</strong>.'],
+      ['Reassess and chart skin findings every <strong>4–6 hours.</strong>', 'أعد التقييم ودوّن حالة الجلد كل <strong>4–6 ساعات.</strong>'],
+      ['Observe IV line hourly for skin integrity, perfusion and placement.', 'راقب الخط الوريدي كل ساعة للتأكد من سلامة الجلد والتروية والموضع.'],
+      ['Use a second nurse to assist with changing devices or body positions to prevent discomfort, pain, and accidental friction/shear. Ensure adequate pain relief is administered to encourage safe movement.', 'استعن بممرض/ممرضة ثانٍ لمساعدتك في تغيير الأجهزة أو الوضعيات لتجنب الانزعاج والألم والاحتكاك والقص غير المقصود. تأكد من إعطاء مسكّن مناسب لتسهيل الحركة الآمنة.'],
+      ['Only peel and change protective skin barriers if they are wet, soiled, shifted, loose, or if localized redness is actively extending beneath them. Always use silicone adhesive remover wipes and pull tape flat ("low and slow") to minimize skin stripping.', 'انزع الحواجز الجلدية الواقية وبدّلها فقط إذا كانت مبللة أو متسخة أو منزاحة أو سائبة، أو إذا كان الاحمرار الموضعي يمتد تحتها. استخدم دائماً مناديل إزالة اللاصق السيليكونية واسحب الشريط بشكل مسطح ("ببطء وقرب الجلد") لتقليل تقشير الجلد.'],
+      ['Maintain nutrition, hydration, and oxygenation. Keep skin dry. Educate parents/caregivers.', 'حافظ على التغذية والترطيب والأكسجة. أبقِ الجلد جافاً. ثقّف الوالدين/مقدمي الرعاية.'] ] },
+    ext: { key: 'ext', range: '25 – 32', label: 'catExt', freq: 'freqExt', hrs: 2, items: [
+      ['Reassess and inspect skin at least every <strong>2–4 hours</strong>, ensuring equipment/objects do not press directly on bare skin. Mobilize/reposition CPAP/NIPPV equipment every 2–3 hours as tolerated.', 'أعد التقييم وافحص الجلد كل <strong>2–4 ساعات</strong> على الأقل، وتأكد أن المعدات والأجسام لا تضغط مباشرة على الجلد العاري. حرّك/غيّر وضعية معدات CPAP/NIPPV كل 2–3 ساعات حسب التحمل.'],
+      ['Use appropriate pressure-relieving devices, such as a gel mattress or specialized dermal support pads (e.g., DermaPad) over bony prominences and under headgear.', 'استخدم أجهزة تخفيف الضغط المناسبة، مثل فراش جل أو وسادات دعم جلدي متخصصة (مثل DermaPad) فوق النتوءات العظمية وتحت أغطية الرأس.'],
+      ['<strong>Notify the provider immediately</strong> and involve a senior nurse if you observe blistering, open sores, non-blanching redness (lasting longer than 20 minutes), or any new pressure injury. Formally activate the NICU pressure-injury management pathway and request a medical/physician review.', '<strong>أبلغ الطبيب فوراً</strong> وأشرك ممرضاً/ممرضة أولى عند ملاحظة فقاعات أو تقرحات مفتوحة أو احمرار لا يبيضّ بالضغط (يستمر أكثر من 20 دقيقة) أو أي إصابة ضغط جديدة. فعّل رسمياً مسار علاج إصابات الضغط في NICU واطلب مراجعة طبية.'],
+      ['Monitor IV/central lines hourly.', 'راقب الخطوط الوريدية/المركزية كل ساعة.'],
+      ['Maintain dry skin, optimal nutrition, hydration, and score trending. Educate parents/caregiver.', 'حافظ على جفاف الجلد وعلى التغذية والترطيب المثلى ومتابعة اتجاه الدرجات. ثقّف الوالدين/مقدمي الرعاية.'] ] }
+  };
+  function categoryOf(n) { return n <= 8 ? GUIDE.low : n <= 16 ? GUIDE.mod : n <= 24 ? GUIDE.high : GUIDE.ext; }
+  function catLabel(c) { return t(c.label); }
+
+  var MSG_REAL = [
+    ['Every careful assessment protects a patch of skin no bigger than your thumb, and a family\'s trust along with it. Thank you for the gentle, attentive work you do.', 'كل تقييم دقيق يحمي قطعة جلد أصغر من إبهامك، ويحمي معها ثقة أسرة كاملة. شكراً لعملك اللطيف واليقظ.'],
+    ['Tiny patients cannot tell us what hurts. You notice anyway. That attention is what keeps them safe.', 'مرضانا الصغار لا يستطيعون أن يخبرونا بما يؤلمهم، وأنتم تلاحظون ذلك رغم هذا. هذه اليقظة هي ما يبقيهم بأمان.'],
+    ['Small, steady habits like repositioning, checking and documenting are what prevent injuries before they begin. You make that happen.', 'العادات الصغيرة المنتظمة مثل تغيير الوضعية والفحص والتوثيق هي ما يمنع الإصابات قبل أن تبدأ، وأنتم من يصنع ذلك.'],
+    ['Behind every score is a baby who is being watched over carefully. Thank you for being the one watching.', 'خلف كل درجة طفل يُرعى باهتمام. شكراً لأنك من يسهر عليه.'],
+    ['Your skill and your patience are part of every baby\'s recovery. Keep going, the unit is better for you.', 'مهارتك وصبرك جزء من تعافي كل رضيع. واصل، فالقسم أفضل بوجودك.']
+  ];
+  var MSG_GOOD = [
+    ['Outstanding work. Your eye for detail is exactly what keeps fragile skin safe.', 'عمل رائع. دقتك في التفاصيل هي ما يحمي الجلد الهش.'],
+    ['Sharp, accurate and careful. Your patients are lucky to have you.', 'دقيق وحريص ومتقن. مرضاك محظوظون بوجودك.'],
+    ['Excellent scoring. Clinical judgment like this is built case by case, and yours is showing.', 'تقييم ممتاز. الحكم السريري يُبنى حالةً بعد حالة، وحكمك واضح اليوم.']
+  ];
+  var MSG_KEEP = [
+    ['Good effort. Every case you review makes the next assessment faster and more confident.', 'جهد جيد. كل حالة تراجعها تجعل تقييمك القادم أسرع وأكثر ثقة.'],
+    ['You are building real skill with each case. Review the highlighted answers and try another one.', 'أنت تبني مهارة حقيقية مع كل حالة. راجع الإجابات المظللة وجرّب حالة أخرى.'],
+    ['Practice is how careful nurses become confident ones. Keep going, you are on the right track.', 'التدريب هو ما يحوّل الممرض الحريص إلى واثق. واصل، فأنت على الطريق الصحيح.']
+  ];
+
+  /* ---------- helpers ---------- */
+  function sumOf(a) { var tt = 0, n = 0; CRITERIA.forEach(function (c) { if (a[c.id]) { tt += a[c.id]; n++; } }); return { t: tt, n: n }; }
+  function guideHTML(cat) { return '<ul class="guide">' + cat.items.map(function (x) { return '<li>' + x[LI()] + '</li>'; }).join('') + '</ul>'; }
+  function val(id) { return ($('#' + id).value || '').trim(); }
+  function fmtDate(ms) {
+    try { return new Date(ms).toLocaleString(lang === 'ar' ? 'ar-SA-u-nu-latn' : 'en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); }
+    catch (e) { return new Date(ms).toLocaleString(); }
+  }
+  function fmtDur(ms) {
+    var m = Math.max(0, Math.round(ms / 60000)), h = Math.floor(m / 60);
+    return h > 0 ? h + t('hUnit') + ' ' + (m % 60) + t('mUnit') : m + t('mUnit');
+  }
+
+  /* ---------- static i18n + theme ---------- */
+  var root = document.documentElement;
+  function effTheme() { return root.getAttribute('data-theme') || (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); }
+  function paintBtns() { $('#themeBtn').textContent = effTheme() === 'dark' ? t('day') : t('night'); $('#langBtn').textContent = t('langBtn'); }
+  var sv = LS.get('nsra-theme'); if (sv === 'dark' || sv === 'light') root.setAttribute('data-theme', sv);
+  $('#themeBtn').addEventListener('click', function () {
+    var n = effTheme() === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', n); LS.set('nsra-theme', n); paintBtns();
+  });
+  function applyStatic() {
+    root.lang = lang; root.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    $$('[data-i18n]').forEach(function (e) { e.textContent = t(e.getAttribute('data-i18n')); });
+    $$('[data-i18n-html]').forEach(function (e) { e.innerHTML = t(e.getAttribute('data-i18n-html')); });
+    $$('[data-i18n-ph]').forEach(function (e) { e.placeholder = t(e.getAttribute('data-i18n-ph')); });
+    $$('[data-i18n-aria]').forEach(function (e) { e.setAttribute('aria-label', t(e.getAttribute('data-i18n-aria'))); });
+    document.title = lang === 'ar' ? 'أداة DEVICE NSRA' : 'DEVICE NSRA Tool';
+    paintBtns();
+  }
+
+  /* ---------- navigation ---------- */
+  var current = 'home';
+  function show(v) {
+    current = v;
+    ['home', 'real', 'practice', 'dash'].forEach(function (n) { $('#view-' + n).hidden = n !== v; });
+    $('#homeTop').hidden = v === 'home';
+    var showDock = v === 'real' || v === 'practice';
+    $('#dock').hidden = !showDock;
+    $('#caseBtn').hidden = v !== 'practice';
+    closeSheet(); updateDock(); renderDue();
+    if (v === 'dash') loadDash();
+    window.scrollTo(0, 0);
+  }
+  $('#brand').addEventListener('click', function () { show('home'); });
+  $('#homeTop').addEventListener('click', function () { show('home'); });
+  $$('[data-home]').forEach(function (b) { b.addEventListener('click', function () { show('home'); }); });
+  $('#goReal').addEventListener('click', function () { show('real'); });
+  $('#goPractice').addEventListener('click', function () { show('practice'); if (!P.c) newCase(); });
+  $('#goDash').addEventListener('click', function () { show('dash'); });
+
+  /* ---------- criteria rendering (keeps state across language switches) ---------- */
+  function buildCriteria(host, prefix, onChange, a, reveal) {
+    host.innerHTML = '';
+    host.classList.toggle('locked', !!reveal);
+    CRITERIA.forEach(function (c, i) {
+      var fs = document.createElement('fieldset');
+      fs.className = 'crit'; fs.dataset.id = c.id;
+      var html = '<legend>' + (i + 1) + '. ' + c.name[LI()] + '</legend><div class="opts">';
+      c.opts.forEach(function (o) {
+        var cls = 'opt', chk = a[c.id] === o[0];
+        if (chk) cls += ' sel';
+        if (reveal) { if (o[0] === reveal[c.id]) cls += ' is-correct'; else if (chk) cls += ' is-wrong'; }
+        html += '<label class="' + cls + '"><input type="radio" name="' + prefix + '-' + c.id + '" value="' + o[0] + '"' + (chk ? ' checked' : '') + (reveal ? ' disabled' : '') + '><span class="score">' + o[0] + '</span><span class="txt">' + o[1][LI()] + '</span></label>';
+      });
+      html += '</div>';
+      if (reveal) {
+        var good = a[c.id] === reveal[c.id];
+        html += '<div class="verdict ' + (good ? 'ok' : 'no') + '">' + (good ? t('ok') : t('notQuite', reveal[c.id])) + '</div>';
+      }
+      fs.innerHTML = html;
+      fs.addEventListener('change', function (e) {
+        if (e.target.type !== 'radio') return;
+        $$('.opt', fs).forEach(function (l) { l.classList.toggle('sel', l.querySelector('input').checked); });
+        onChange(c.id, parseInt(e.target.value, 10));
+      });
+      host.appendChild(fs);
+    });
+  }
+
+  /* ---------- sending: queue + offline retry ---------- */
+  var Q = jget('nsra-queue', []);
+  function saveQ() { LS.set('nsra-queue', JSON.stringify(Q)); }
+  var flushing = false;
+  function postOne(p) {
+    return fetch(NSRA_ENDPOINT, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(p) });
+  }
+  function setStatus(id, s) { if (R && R.sid === id) { R.status = s; paintStatus(); } }
+  function flush() {
+    if (flushing || !NSRA_ENDPOINT || !Q.length) return;
+    flushing = true;
+    (function next() {
+      if (!Q.length) { flushing = false; return; }
+      var p = Q[0];
+      postOne(p).then(function () {
+        Q = Q.filter(function (x) { return x.id !== p.id || x.v !== p.v; }); saveQ();
+        if (!Q.some(function (x) { return x.id === p.id; })) setStatus(p.id, 'sent');
+        next();
+      }).catch(function () { flushing = false; Q.forEach(function (x) { setStatus(x.id, 'queued'); }); });
+    })();
+  }
+  window.addEventListener('online', flush);
+  setInterval(flush, 60000);
+  function paintStatus() {
+    var el = $('#sendStatus'); if (!el) return;
+    var map = { missing: 'stMissing', sending: 'stSending', sent: 'stSent', queued: 'stQueued', off: 'stOff' };
+    el.className = 'sendstatus ' + (R.status || '');
+    el.innerHTML = '<span>' + t(map[R.status] || 'stOff') + '</span>' + (R.status === 'queued' ? '<button class="btn small" id="retryBtn">' + t('retry') + '</button>' : '');
+    var b = $('#retryBtn'); if (b) b.addEventListener('click', flush);
+  }
+  function maybeSend() {
+    if (!R.done) return;
+    if (!NSRA_ENDPOINT) { R.status = 'off'; paintStatus(); return; }
+    var n = val('nurseName'), e = val('empId'), m = val('mrn');
+    if (!n || !e || !m) { R.status = 'missing'; paintStatus(); return; }
+    var sig = JSON.stringify([n, e, m, R.a]);
+    if (sig === R.sig) { paintStatus(); return; }
+    clearTimeout(R.timer);
+    R.status = 'sending'; paintStatus();
+    R.timer = setTimeout(function () {
+      var tt = sumOf(R.a).t;
+      R.sig = sig; R.ver = (R.ver || 0) + 1;
+      var p = { id: R.sid, v: R.ver, nurse: n, empId: e, mrn: m, scores: R.a, total: tt, category: { low: 'Low Risk', mod: 'Moderate Risk', high: 'High Risk', ext: 'Extreme Risk' }[categoryOf(tt).key], device: new Date().toISOString() };
+      Q = Q.filter(function (x) { return x.id !== p.id; }); Q.push(p); saveQ();
+      if (navigator.onLine === false) { R.status = 'queued'; paintStatus(); return; }
+      flush();
+    }, 1200);
+  }
+
+  /* ---------- local history, trend ---------- */
+  function histAll() { return jget('nsra-hist', {}); }
+  function saveHist(mrn, item) {
+    if (!mrn) return;
+    var h = histAll(), arr = (h[mrn] || []).filter(function (x) { return x.id !== item.id; });
+    arr.push(item); h[mrn] = arr.slice(-30); LS.set('nsra-hist', JSON.stringify(h));
+  }
+  function fetchJson(url) {
+    var ctl = window.AbortController ? new AbortController() : null;
+    var tm = setTimeout(function () { if (ctl) ctl.abort(); }, 15000);
+    return fetch(url, ctl ? { signal: ctl.signal } : {}).then(function (r) { clearTimeout(tm); return r.json(); });
+  }
+  function trendHTML() {
+    if (!R.trendItems) return '<h4>' + t('trendT') + '</h4><p class="sub">' + (val('mrn') ? t('trendLoad') : t('trendNoMrn')) + '</p>';
+    var items = R.trendItems.filter(function (x) { return x.id !== R.sid; }).sort(function (a, b) { return a.at - b.at; });
+    var total = sumOf(R.a).t;
+    var h = '<h4>' + t('trendT') + '</h4>';
+    if (!items.length) return h + '<p class="msg same">' + t('trendFirst') + '</p>' + (R.trendLocalOnly ? '<p class="sub">' + t('trendLocal') + '</p>' : '');
+    var prev = items[items.length - 1], d = total - prev.t, pd = fmtDate(prev.at) + ', ' + prev.t;
+    h += d > 0 ? '<p class="msg up">↑ ' + t('trendUp', d, pd) + '</p>' : d < 0 ? '<p class="msg down">↓ ' + t('trendDown', d, pd) + '</p>' : '<p class="msg same">→ ' + t('trendSame', pd) + '</p>';
+    var show = items.slice(-5).concat([{ t: total, at: R.doneAt, now: true }]);
+    h += '<div class="bars">' + show.map(function (x) {
+      return '<div class="b ' + categoryOf(x.t).key + (x.now ? ' now' : '') + '"><span>' + x.t + '</span><i style="height:' + Math.max(6, Math.round(x.t / 32 * 64)) + 'px"></i><small>' + (x.now ? t('trendNow') : new Date(x.at).getDate() + '/' + (new Date(x.at).getMonth() + 1)) + '</small></div>';
+    }).join('') + '</div>';
+    if (R.trendLocalOnly) h += '<p class="sub">' + t('trendLocal') + '</p>';
+    return h;
+  }
+  function paintTrend() { var b = $('#trendBox'); if (b) b.innerHTML = trendHTML(); }
+  function loadTrend() {
+    var mrn = val('mrn'); R.trendMrn = mrn;
+    if (!mrn) { R.trendItems = null; paintTrend(); return; }
+    var local = (histAll()[mrn] || []);
+    R.trendItems = local.slice(); R.trendLocalOnly = true; paintTrend();
+    if (!NSRA_ENDPOINT || navigator.onLine === false) return;
+    var sid = R.sid;
+    fetchJson(NSRA_ENDPOINT + '?action=history&mrn=' + encodeURIComponent(mrn)).then(function (j) {
+      if (!j || !j.ok || R.sid !== sid || R.trendMrn !== mrn) return;
+      var map = {};
+      local.forEach(function (x) { map[x.id] = x; });
+      (j.items || []).forEach(function (x) { map[x.id] = { id: x.id, at: x.at, t: x.total }; });
+      R.trendItems = Object.keys(map).map(function (k) { return map[k]; }); R.trendLocalOnly = false; paintTrend();
+    }).catch(function () {});
+  }
+
+  /* ---------- reminders ---------- */
+  function dueAll() { return jget('nsra-due', []); }
+  function saveDueItem(key, mrn, catKey, dueMs) {
+    var arr = dueAll().filter(function (x) { return x.key !== key; });
+    arr.push({ key: key, mrn: mrn, cat: catKey, due: dueMs }); LS.set('nsra-due', JSON.stringify(arr.slice(-60)));
+  }
+  function renderDue() {
+    var arr = dueAll().sort(function (a, b) { return a.due - b.due; }), card = $('#dueCard');
+    card.hidden = !arr.length;
+    $('#dueList').innerHTML = arr.map(function (x) {
+      return '<div class="due-row"><span class="mrn">' + (x.mrn ? 'MRN ' + esc(x.mrn) : '—') + '</span><span class="pill ' + x.cat + '">' + t(GUIDE[x.cat].label) + '</span><span class="cd" data-count="' + x.due + '"></span><button class="btn small" data-rm="' + esc(x.key) + '">' + t('remove') + '</button></div>';
+    }).join('');
+    $$('[data-rm]').forEach(function (b) {
+      b.addEventListener('click', function () { var k = b.getAttribute('data-rm'); LS.set('nsra-due', JSON.stringify(dueAll().filter(function (x) { return x.key !== k; }))); renderDue(); });
+    });
+    tick();
+  }
+  function tick() {
+    $$('[data-count]').forEach(function (e) {
+      var ms = parseInt(e.getAttribute('data-count'), 10) - Date.now();
+      e.classList.toggle('over', ms <= 0);
+      e.textContent = ms <= 0 ? t('overdue') : t('dueIn', fmtDur(ms));
+    });
+  }
+  setInterval(tick, 20000);
+
+  /* ---------- REAL assessment ---------- */
+  var R = null;
+  function newSid() { return 'N' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+  function freshR() { return { a: {}, msgI: null, sid: newSid(), status: null, sig: null, ver: 0, trendItems: null }; }
+  R = freshR();
+  function drawRealCrit() { buildCriteria($('#realCrit'), 'r', function (id, s) { R.a[id] = s; renderReal(); }, R.a, null); }
+  try { $('#nurseName').value = LS.get('nsra-nurse') || ''; $('#empId').value = LS.get('nsra-emp') || ''; } catch (e) {}
+  ['babyName', 'motherName', 'mrn', 'nurseName', 'empId'].forEach(function (id) {
+    $('#' + id).addEventListener('input', function () {
+      if (id === 'nurseName') LS.set('nsra-nurse', $('#nurseName').value);
+      if (id === 'empId') LS.set('nsra-emp', $('#empId').value);
+      if (R.done) { renderReal(); }
+    });
+  });
+
+  function realSummary(tt, cat) {
+    var v = function (id) { return val(id) || '—'; };
+    var lines = [t('sumTitle'), t('lBaby') + ': ' + v('babyName'), t('lMother') + ': ' + v('motherName'), 'MRN: ' + v('mrn'), t('sumDate') + ': ' + new Date().toLocaleString(), ''];
+    CRITERIA.forEach(function (c) { lines.push(c.name[LI()] + ': ' + R.a[c.id]); });
+    lines.push('', t('sumTotal') + ': ' + tt + ' – ' + catLabel(cat) + ' (' + cat.range + ')');
+    lines.push('', 'DEVICE NSRA Tool – Program created by Abdallah Elaydi. © 2026 Abdallah Elaydi.');
+    return lines.join('\n');
+  }
+  function renderReal() {
+    var s = sumOf(R.a), host = $('#realResult'), wasDone = R.done;
+    R.done = s.n === CRITERIA.length;
+    if (!R.done) {
+      host.innerHTML = '<div class="result pending"><div class="cat" style="color:var(--ink)">' + t('result') + '</div><p style="margin-top:6px">' + t('pending', s.n) + '</p></div>';
+      updateDock(); return;
+    }
+    var cat = categoryOf(s.t);
+    if (R.msgI == null) R.msgI = rnd(0, MSG_REAL.length - 1);
+    if (!R.doneAt) R.doneAt = Date.now();
+    var nm = val('babyName'), mrn = val('mrn'), mom = val('motherName');
+    var who = [nm && t('lBaby') + ': <b>' + esc(nm) + '</b>', mom && t('lMother') + ': <b>' + esc(mom) + '</b>', mrn && 'MRN: <b>' + esc(mrn) + '</b>'].filter(Boolean).join(' · ');
+    var dueMs = R.doneAt + cat.hrs * 3600000;
+    host.innerHTML =
+      '<div class="result c-' + cat.key + '">' +
+      '<p class="rangeline" style="margin-bottom:12px">' + (who || t('addIds')) + '</p>' +
+      '<div class="score-row"><div class="big">' + s.t + '<small> / 32</small></div><div><div class="cat">' + catLabel(cat) + '</div><div class="rangeline">' + t('scoreRange') + ' ' + cat.range + '</div></div></div>' +
+      '<div class="breakdown">' + CRITERIA.map(function (c) { return '<div><span>' + c.short[LI()] + '</span><b>' + R.a[c.id] + '</b></div>'; }).join('') + '</div>' +
+      '<div class="reassess"><b>' + t('reT') + ' ' + t(cat.freq) + '</b><span class="cd" data-count="' + dueMs + '"></span></div>' +
+      '<div class="trend" id="trendBox"></div>' +
+      '<h3>' + t('guideT') + '</h3>' + guideHTML(cat) +
+      '<p class="rangeline" style="margin-top:16px">' + t('recordNote') + '</p>' +
+      '<div class="sendstatus" id="sendStatus"></div>' +
+      '<div class="note"><small>' + t('noteLabel') + '</small><p>' + MSG_REAL[R.msgI][LI()] + '</p></div>' +
+      '<div class="actions"><button class="btn primary" id="copyBtn">' + t('copySum') + '</button><button class="btn" id="newBtn">' + t('newAssess') + '</button><button class="btn" data-home2>' + t('home') + '</button></div>' +
+      '<div id="copyOut"></div><p class="credit">' + t('credit') + '</p></div>';
+    $('#copyBtn').addEventListener('click', function () { copyText(realSummary(s.t, cat), $('#copyOut'), $('#copyBtn')); });
+    $('#newBtn').addEventListener('click', resetReal);
+    $('[data-home2]', host).addEventListener('click', function () { show('home'); });
+    saveHist(mrn, { id: R.sid, at: R.doneAt, t: s.t });
+    saveDueItem(mrn || R.sid, mrn, cat.key, dueMs);
+    paintTrend(); tick(); paintStatus(); updateDock();
+    if (!wasDone || R.trendMrn !== mrn) { clearTimeout(R.tt); R.tt = setTimeout(loadTrend, wasDone ? 800 : 0); }
+    maybeSend();
+  }
+  function resetReal() {
+    clearTimeout(R.timer); clearTimeout(R.tt);
+    R = freshR();
+    ['babyName', 'motherName', 'mrn'].forEach(function (id) { $('#' + id).value = ''; });
+    drawRealCrit(); renderReal(); window.scrollTo(0, 0);
+  }
+  function copyText(text, out, btn) {
+    var fallback = function () {
+      out.innerHTML = '<textarea class="copybox" readonly></textarea><p class="rangeline">' + t('copyManual') + '</p>';
+      var ta = $('textarea', out); ta.value = text; ta.focus(); ta.select();
+    };
+    try {
+      navigator.clipboard.writeText(text).then(function () {
+        btn.textContent = t('copied'); setTimeout(function () { btn.textContent = t('copySum'); }, 1800);
+      }, fallback);
+    } catch (e) { fallback(); }
+  }
+
+  /* ---------- PRACTICE ---------- */
+  var P = { c: null, a: {}, done: false, n: 0, diff: 'any', right: 0, cases: 0, last: null, msgI: 0, good: false };
+  var GIRLS = [['Layla', 'ليلى'], ['Noor', 'نور'], ['Maryam', 'مريم'], ['Sara', 'سارة'], ['Reem', 'ريم'], ['Lina', 'لينا'], ['Hessa', 'حصة'], ['Dana', 'دانة'], ['Jana', 'جنى'], ['Joud', 'جود'], ['Ghala', 'غالية']];
+  var BOYS = [['Omar', 'عمر'], ['Yusuf', 'يوسف'], ['Khalid', 'خالد'], ['Hamad', 'حمد'], ['Faisal', 'فيصل'], ['Adam', 'آدم'], ['Zayd', 'زيد'], ['Ali', 'علي'], ['Ibrahim', 'إبراهيم'], ['Saud', 'سعود'], ['Rayan', 'ريان'], ['Talal', 'طلال']];
+  var MOMS = [['Aisha', 'عائشة'], ['Huda', 'هدى'], ['Salma', 'سلمى'], ['Amal', 'أمل'], ['Manal', 'منال'], ['Nouf', 'نوف'], ['Hind', 'هند'], ['Rawan', 'روان'], ['Ghada', 'غادة'], ['Samar', 'سمر'], ['Wafa', 'وفاء'], ['Lubna', 'لبنى'], ['Najla', 'نجلاء'], ['Fawzia', 'فوزية']];
+  var TEXT = {
+    res: { 4: [['Baby is intubated and mechanically ventilated.', 'الرضيع مُنَبَّب وموصول بجهاز التنفس الصناعي.'], ['Baby remains on the ventilator through an endotracheal tube.', 'ما يزال الرضيع على جهاز التنفس الصناعي عبر أنبوب رغامي.']],
+           3: [['Baby is on nasal CPAP with a mask and bonnet.', 'الرضيع على CPAP أنفي بقناع وغطاء رأس.'], ['Baby is supported with BiPAP delivered by nasal prongs.', 'الرضيع يتلقى دعم BiPAP عبر شوكات أنفية.']],
+           2: [['Baby is on high-flow nasal cannula oxygen.', 'الرضيع على أكسجين عالي التدفق عبر القنية الأنفية.'], ['Baby needs only low-flow oxygen by nasal cannula.', 'يحتاج الرضيع إلى أكسجين منخفض التدفق فقط عبر القنية الأنفية.']],
+           1: [['Baby is breathing room air with no respiratory support.', 'الرضيع يتنفس هواء الغرفة بدون أي دعم تنفسي.'], ['Baby has been off all oxygen and respiratory support since last week.', 'الرضيع بدون أكسجين أو دعم تنفسي منذ الأسبوع الماضي.']] },
+    sen: { 4: [['Baby is on a continuous sedative infusion and shows no response to routine handling.', 'الرضيع على تسريب مستمر لمهدئ ولا يستجيب للتعامل الروتيني.'], ['Level of consciousness is markedly diminished and the baby barely reacts to touch.', 'مستوى الوعي منخفض بشكل واضح، ولا يكاد الرضيع يتفاعل مع اللمس.']],
+           3: [['Baby startles, grimaces and desaturates with noise, bright light and routine touch.', 'يجفل الرضيع ويعبس وتنخفض نسبة الأكسجين لديه مع الضجيج والضوء الساطع واللمس الروتيني.'], ['Baby is hypersensitive; even gentle handling and ambient noise cause clenching and tremors.', 'الرضيع شديد الحساسية؛ حتى التعامل اللطيف والضجيج المحيط يسببان له قبض الأطراف والارتجاف.']],
+           2: [['Baby becomes easily agitated during cares but settles quickly with swaddling and containment holding.', 'يهتاج الرضيع بسهولة أثناء الرعاية لكنه يهدأ سريعاً بالتقميط والاحتواء.'], ['Baby fusses and cries with nappy changes, yet calms with a pacifier and gentle containment.', 'يتذمر الرضيع ويبكي عند تغيير الحفاض، لكنه يهدأ باللهاية والاحتواء اللطيف.']],
+           1: [['Baby is alert and gives age-appropriate responses to voices and handling.', 'الرضيع يقظ ويستجيب للأصوات واللمس بما يناسب عمره.'], ['Baby is calm and alert, and wakes on cue for feeds.', 'الرضيع هادئ ويقظ، ويستيقظ للرضعات في موعدها.']] },
+    act: { 4: [['Baby lies motionless and makes no change in position at all, so every position change needs full staff assistance.', 'يرقد الرضيع بلا حركة ولا يغيّر وضعيته إطلاقاً، فكل تغيير للوضعية يحتاج مساعدة كاملة من الطاقم.'], ['Baby does not move even slightly and depends entirely on staff for repositioning.', 'لا يتحرك الرضيع حتى بشكل بسيط، ويعتمد كلياً على الطاقم في تغيير الوضعية.']],
+           3: [['Baby makes occasional slight changes in position, such as a small movement of an arm or a leg.', 'يغيّر الرضيع وضعيته تغييراً بسيطاً من حين لآخر، كتحريك ذراع أو ساق قليلاً.'], ['Movement is limited to an occasional slight shift of the limbs.', 'تقتصر حركته على إزاحة بسيطة للأطراف بين وقت وآخر.']],
+           2: [['Baby frequently changes body and limb position and often turns the head.', 'يغيّر الرضيع وضعية جسمه وأطرافه كثيراً ويدير رأسه في الغالب.'], ['Baby shifts position often and turns the head side to side without help.', 'يغيّر الرضيع وضعيته كثيراً ويدير رأسه من جانب إلى آخر دون مساعدة.']],
+           1: [['Baby makes major, frequent position changes, moving all extremities and turning the head.', 'يغيّر الرضيع وضعيته بشكل كبير ومتكرر، ويحرك كل أطرافه ويدير رأسه.'], ['Baby kicks, stretches and turns the head vigorously, moving all four limbs.', 'يركل الرضيع ويتمطى ويدير رأسه بقوة ويحرك أطرافه الأربعة.']] },
+    moi: { 4: [['The skin is constantly moist from high incubator humidity and a leaking stoma.', 'الجلد رطب باستمرار بسبب الرطوبة العالية في الحضّانة وتسرب من الفغر (stoma).'], ['A weeping wound and high incubator humidity keep the skin constantly moist, and the nappy area is wet.', 'جرح راشح ورطوبة الحضّانة العالية يبقيان الجلد رطباً باستمرار، ومنطقة الحفاض مبللة.']],
+           3: [['The skin is often moist and the linen has to be changed about once every 8 hours.', 'الجلد رطب في الغالب وتحتاج الشراشف إلى تغيير مرة كل 8 ساعات تقريباً.'], ['Linen becomes damp regularly and needs changing about every 8 hours.', 'تصبح الشراشف رطبة بانتظام وتحتاج إلى تغيير كل 8 ساعات تقريباً.']],
+           2: [['The skin is only occasionally moist and the linen is changed about once every 12 hours.', 'الجلد رطب أحياناً فقط، وتُغيَّر الشراشف مرة كل 12 ساعة تقريباً.'], ['Moisture is occasional, with a linen change needed about every 12 hours.', 'الرطوبة عرضية، وتحتاج الشراشف إلى تغيير كل 12 ساعة تقريباً.']],
+           1: [['The skin is usually dry; routine nappy changes and one linen change per day are enough.', 'الجلد جاف عادةً، ويكفيه تغيير الحفاض الروتيني وتغيير الشراشف مرة في اليوم.'], ['The skin stays dry with routine nappy changes and linen changed once daily.', 'يبقى الجلد جافاً مع تغيير الحفاض الروتيني والشراشف مرة يومياً.']] },
+    ski: { 4: [['There is an extensive area of skin loss over the occiput, with a device-related pressure injury.', 'توجد منطقة واسعة من فقدان الجلد فوق مؤخرة الرأس مع إصابة ضغط ناتجة عن جهاز.'], ['A wound with extensive loss of skin integrity is present beneath the device contact point.', 'يوجد جرح مع فقدان واسع لسلامة الجلد تحت نقطة تلامس الجهاز.']],
+           3: [['A localized broken area with edema is present at the cannula site.', 'توجد منطقة متقرحة موضعية مع وذمة عند موضع القسطرة.'], ['There is localized skin breakdown with surrounding edema.', 'يوجد تهتك جلدي موضعي مع وذمة حوله.']],
+           2: [['Minor redness and irritation are visible under the tape and probe sites.', 'يُلاحظ احمرار وتهيّج بسيط تحت الشريط اللاصق ومواضع الحساسات.'], ['Mild skin irritation with redness is noted around the adhesive.', 'يُلاحظ تهيّج جلدي خفيف مع احمرار حول اللاصق.']],
+           1: [['Skin integrity is intact, with no redness or breakdown.', 'الجلد سليم دون احمرار أو تقرح.'], ['The skin is intact and healthy-looking at every device site.', 'الجلد سليم وبصحة جيدة عند كل مواضع الأجهزة.']] },
+    blo: { 4: [['Many attempts were needed for IV access today, including repeated cannulation, a long line attempt and an arterial line.', 'احتاج الأمر إلى محاولات كثيرة للوصول الوريدي اليوم، شملت قسطرة متكررة ومحاولة خط طويل وخطاً شريانياً.'], ['Vascular access has been very difficult, with many cannulation attempts and an arterial line.', 'كان الوصول الوريدي صعباً جداً، مع محاولات كثيرة للقسطرة وخط شرياني.']],
+           3: [['A recent venipuncture left a large bruise and edema around the insertion site.', 'ترك بزل وريدي حديث كدمة كبيرة ووذمة حول موضع الإدخال.'], ['Venipuncture resulted in a large bruise with edema at the site.', 'نتج عن البزل الوريدي كدمة كبيرة مع وذمة في الموضع.']],
+           2: [['More than three heel pricks were done in the last 24 hours.', 'أُجريت أكثر من ثلاث وخزات كعب خلال الـ 24 ساعة الماضية.'], ['Blood tests required over three heel pricks in the past 24 hours.', 'تطلبت التحاليل أكثر من ثلاث وخزات كعب في آخر 24 ساعة.']],
+           1: [['Blood sampling is done only daily or weekly.', 'يُسحب الدم يومياً أو أسبوعياً فقط.'], ['Bloods are drawn about once a week.', 'يُسحب الدم تقريباً مرة في الأسبوع.']] },
+    nut: { 4: [['Baby is on TPN, lipids and IV fluids with IV medications, and does not tolerate feeds.', 'الرضيع على TPN ودهون وسوائل وريدية مع أدوية وريدية، ولا يتحمل التغذية.'], ['Feeds are not tolerated, so nutrition is by TPN, lipids and IV fluids, plus IV medications.', 'لا تُتحمَّل التغذية، لذا تكون التغذية بـ TPN ودهون وسوائل وريدية، إضافة إلى أدوية وريدية.']],
+           3: [['Baby receives TPN, lipids and IV fluids with trophic feeds only.', 'يتلقى الرضيع TPN ودهوناً وسوائل وريدية مع تغذية تحفيزية (trophic) فقط.'], ['Nutrition is TPN, lipids and IV fluids alongside trophic feeds.', 'التغذية عبارة عن TPN ودهون وسوائل وريدية بجانب تغذية تحفيزية.']],
+           2: [['Baby receives TPN, lipids and IV fluids together with tube feeds.', 'يتلقى الرضيع TPN ودهوناً وسوائل وريدية مع تغذية بالأنبوب.'], ['Tube feeds are being advanced while TPN, lipids and IV fluids continue.', 'تتم زيادة التغذية بالأنبوب تدريجياً بينما يستمر TPN والدهون والسوائل الوريدية.']],
+           1: [['Baby is on full OGT/NGT feeds.', 'الرضيع على تغذية كاملة عبر أنبوب OGT/NGT.'], ['Baby receives full feeds by nasogastric tube.', 'يتلقى الرضيع تغذية كاملة عبر أنبوب أنفي معدي.']] }
+  };
+  var GA_RANGE = { 4: [24, 27], 3: [29, 32], 2: [34, 37], 1: [39, 41] };
+  var BW_RANGE = { 4: [600, 1100], 3: [1100, 1800], 2: [1900, 2800], 1: [2800, 3800] };
+
+  function genScores(target) {
+    if (target === 'low') { var o = {}; CRITERIA.forEach(function (c) { o[c.id] = 1; }); return o; }
+    var band = { mod: [0.12, 0.42], high: [0.46, 0.74], ext: [0.8, 1.05] }[target];
+    for (var tries = 0; tries < 400; tries++) {
+      var s = band[0] + Math.random() * (band[1] - band[0]), sc = {};
+      CRITERIA.forEach(function (c) { var v = Math.round(1 + 3 * (s + (Math.random() - 0.5) * 0.6)); sc[c.id] = Math.max(1, Math.min(4, v)); });
+      if (categoryOf(sumOf(sc).t).key === target) return sc;
+    }
+    var f = {}; CRITERIA.forEach(function (c) { f[c.id] = target === 'mod' ? 2 : target === 'high' ? 3 : 4; }); return f;
+  }
+  function genCase(diff) {
+    var target = diff;
+    if (diff === 'any') { var r = Math.random(); target = r < 0.12 ? 'low' : r < 0.42 ? 'mod' : r < 0.74 ? 'high' : 'ext'; }
+    var sc = genScores(target), ga = GA_RANGE[sc.ga], bw = BW_RANGE[sc.ga];
+    var w = rnd(ga[0], ga[1]), d = rnd(0, 6), dol = sc.ga === 4 ? rnd(1, 14) : sc.ga === 3 ? rnd(2, 28) : rnd(1, 30);
+    var girl = Math.random() < 0.5, v = {};
+    ['res', 'sen', 'act', 'moi', 'ski', 'blo', 'nut'].forEach(function (k) { v[k] = rnd(0, 1); });
+    return { sc: sc, v: v, girl: girl, nm: pick(girl ? GIRLS : BOYS), mom: pick(MOMS), w: w, d: d, born: Math.max(22, w - Math.floor(dol / 7)), dol: dol, bw: rnd(Math.round(bw[0] / 10), Math.round(bw[1] / 10)) * 10, mrn: String(rnd(100000, 999999)) };
+  }
+  function tx(c, k) { return TEXT[k][c.sc[k]][c.v[k]][LI()]; }
+  function caseHTML(c) {
+    var name = lang === 'ar' ? (c.girl ? 'الطفلة ' : 'الطفل ') + c.nm[1] : 'Baby ' + c.nm[0];
+    var ga = c.w + '+' + c.d + ' ' + t('weeks');
+    var intro = lang === 'ar'
+      ? 'وُلد الرضيع في الأسبوع ' + c.born + ' من الحمل، وعمره الحملي الحالي ' + ga + '، وهو الآن في اليوم ' + c.dol + ' من العمر في وحدة العناية المركزة لحديثي الولادة. '
+      : name + ' was born at ' + c.born + ' weeks and is now ' + ga + ' current gestational age, on day ' + c.dol + ' of life in the NICU. ';
+    var p1 = intro + [tx(c, 'res'), tx(c, 'sen'), tx(c, 'act')].join(' ');
+    var p2 = [tx(c, 'ski'), tx(c, 'moi'), tx(c, 'blo'), tx(c, 'nut')].join(' ');
+    return '<div class="case"><span class="tag">' + t('caseTag', P.n) + '</span><h3>' + name + '</h3>' +
+      '<div class="meta"><div><small>' + t('sex') + '</small><b>' + (c.girl ? t('girl') : t('boy')) + '</b></div><div><small>' + t('curGa') + '</small><b>' + ga + '</b></div><div><small>' + t('dol') + '</small><b>' + c.dol + '</b></div><div><small>' + t('weight') + '</small><b>' + c.bw + ' ' + t('g') + '</b></div><div><small>' + t('motherL') + '</small><b>' + t('mrs') + ' ' + c.mom[LI()] + '</b></div><div><small>' + t('mrnL') + '</small><b>' + c.mrn + '</b></div></div>' +
+      '<p>' + p1 + '</p><p>' + p2 + '</p></div>' +
+      '<div class="actions"><button class="btn small" id="nextCaseTop">' + t('newCase') + '</button></div>';
+  }
+  function newCase() { P.n++; P.a = {}; P.done = false; P.last = null; P.c = genCase(P.diff); renderPractice(); window.scrollTo(0, 0); }
+  function renderPractice() {
+    if (!P.c) return;
+    $('#caseCol').innerHTML = caseHTML(P.c);
+    $('#nextCaseTop').addEventListener('click', newCase);
+    buildCriteria($('#pracCrit'), 'p' + P.n, function (id, s) { P.a[id] = s; renderPracStatus(); }, P.a, P.done ? P.c.sc : null);
+    renderPracStatus();
+  }
+  $$('#diffChips .chip').forEach(function (b) {
+    b.addEventListener('click', function () {
+      $$('#diffChips .chip').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      P.diff = b.dataset.d; newCase();
+    });
+  });
+  function renderPracStatus() {
+    var host = $('#pracResult'), s = sumOf(P.a);
+    if (P.done) { renderPracResult(); }
+    else {
+      host.innerHTML = '<div class="actions"><button class="btn primary" id="checkBtn"' + (s.n < 8 ? ' disabled' : '') + '>' + t('check') + '</button></div>' +
+        '<p class="rangeline" style="margin-top:8px">' + (s.n < 8 ? t('chooseAll', s.n) : t('ready')) + '</p>';
+      var cb = $('#checkBtn'); if (cb) cb.addEventListener('click', submitPractice);
+    }
+    updateDock();
+  }
+  function submitPractice() {
+    var right = 0;
+    CRITERIA.forEach(function (c) { if (P.a[c.id] === P.c.sc[c.id]) right++; });
+    P.done = true; P.right += right; P.cases++;
+    P.good = right >= 7; P.msgI = rnd(0, 2); P.last = { right: right, mine: sumOf(P.a).t };
+    renderPractice();
+    var rc = $('#pracResult .result'); if (rc && rc.scrollIntoView) rc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  function renderPracResult() {
+    var truth = sumOf(P.c.sc).t, cat = categoryOf(truth), mine = P.last.mine, mc = categoryOf(mine);
+    var msg = (P.good ? MSG_GOOD : MSG_KEEP)[P.msgI][LI()];
+    $('#pracResult').innerHTML =
+      '<div class="result c-' + cat.key + '">' +
+      '<div class="score-row"><div class="big">' + truth + '<small> / 32</small></div><div><div class="cat">' + catLabel(cat) + '</div><div class="rangeline">' + t('correctTotal', cat.range) + '</div></div></div>' +
+      '<div class="compare"><div><small>' + t('critCorrect') + '</small><b>' + P.last.right + ' / 8</b></div><div><small>' + t('yourTotal') + '</small><b>' + mine + '</b></div><div><small>' + t('yourCat') + '</small><b style="font-size:1.1rem">' + catLabel(mc) + '</b></div></div>' +
+      '<p class="rangeline" style="margin-top:12px">' + (mc.key === cat.key ? t('sameCat') : t('diffCat')) + '</p>' +
+      '<h3>' + t('guideT') + '</h3>' + guideHTML(cat) +
+      '<div class="note"><small>' + t('noteLabel') + '</small><p>' + msg + '</p></div>' +
+      '<p class="rangeline" style="margin-top:14px">' + t('session', P.right, P.cases) + '</p>' +
+      '<div class="actions"><button class="btn primary" id="nextCase">' + t('nextCase') + '</button><button class="btn" id="homeBtn2">' + t('home') + '</button></div><p class="credit">' + t('credit') + '</p></div>';
+    $('#nextCase').addEventListener('click', newCase);
+    $('#homeBtn2').addEventListener('click', function () { show('home'); });
+  }
+
+  /* ---------- dashboard ---------- */
+  var D = null;
+  function dnote(k) { $('#dashBody').innerHTML = '<div class="card dnote">' + t(k) + '</div>'; }
+  function loadDash() {
+    if (!NSRA_ENDPOINT) { dnote('dOff'); return; }
+    if (!D) dnote('dLoad');
+    fetchJson(NSRA_ENDPOINT + '?action=stats').then(function (j) {
+      if (!j || !j.ok) throw new Error('bad'); D = j; renderDash();
+    }).catch(function () { if (!D) dnote('dFail'); else renderDash(); });
+  }
+  function renderDash() {
+    if (!D || !D.total) { dnote('dNone'); return; }
+    var cats = ['low', 'mod', 'high', 'ext'], tot = D.total;
+    var h = '<div class="tiles"><div class="tile"><small>' + t('dTotal') + '</small><b>' + D.total + '</b></div><div class="tile"><small>' + t('dAvg') + '</small><b>' + Number(D.avg).toFixed(1) + '</b></div><div class="tile"><small>' + t('dNurses') + '</small><b>' + D.nurses + '</b></div><div class="tile"><small>' + t('dMrns') + '</small><b>' + D.mrns + '</b></div></div>';
+    h += '<div class="card panel"><h3>' + t('dRisk') + '</h3><div class="stack">' + cats.map(function (k) { return '<i class="' + k + '" style="width:' + (D.cats[k] / tot * 100) + '%" title="' + D.cats[k] + '"></i>'; }).join('') + '</div>' +
+      '<div class="legend">' + cats.map(function (k) { return '<span class="' + k + '"><i></i>' + t(GUIDE[k].label) + ': <b>' + D.cats[k] + '</b> (' + Math.round(D.cats[k] / tot * 100) + '%)</span>'; }).join('') + '</div></div>';
+    h += '<div class="card panel"><h3>' + t('dCrit') + '</h3>' + CRITERIA.map(function (c) {
+      var v = D.crit[c.id] || 0;
+      return '<div class="hbar"><span>' + c.short[LI()] + '</span><div class="track"><i style="width:' + Math.max(0, (v - 1) / 3 * 100) + '%"></i></div><b>' + Number(v).toFixed(1) + '</b></div>';
+    }).join('') + '</div>';
+    var mx = Math.max.apply(null, D.days.map(function (x) { return x.n; }).concat([1]));
+    h += '<div class="card panel"><h3>' + t('dDays') + '</h3><div class="days">' + D.days.map(function (x) {
+      return '<i class="' + (x.n ? '' : 'zero') + '" style="height:' + (x.n ? Math.max(6, x.n / mx * 100) : 2) + '%" title="' + x.d + ': ' + x.n + '"></i>';
+    }).join('') + '</div><div class="axis"><span>' + D.days[0].d.slice(5) + '</span><span>' + D.days[D.days.length - 1].d.slice(5) + '</span></div></div>';
+    $('#dashBody').innerHTML = h;
+  }
+  $('#dashRefresh').addEventListener('click', function () { D = null; loadDash(); });
+
+  /* ---------- dock + case sheet ---------- */
+  function updateDock() {
+    var st = $('#dockStat'); if (!st) return;
+    if (current === 'real') {
+      var s = sumOf(R.a);
+      st.innerHTML = t('dockSel', s.n) + '<small>' + (s.n ? t('dockRun', s.t) + (s.n === 8 ? ' · ' + catLabel(categoryOf(s.t)) : '') : t('dockChoose')) + '</small>';
+    } else if (current === 'practice') {
+      var p = sumOf(P.a);
+      st.innerHTML = P.done ? t('dockChecked') + '<small>' + t('dockReview') + '</small>' : t('dockSel', p.n) + '<small>' + t('dockCase', P.n, p.t) + '</small>';
+    }
+  }
+  function openSheet() { var c = $('#caseCol .case'); $('#sheetCase').innerHTML = c ? c.outerHTML : ''; $('#sheet').hidden = false; }
+  function closeSheet() { $('#sheet').hidden = true; }
+  $('#caseBtn').addEventListener('click', openSheet);
+  $('#sheetClose').addEventListener('click', closeSheet);
+  $('#sheet').addEventListener('click', function (e) { if (e.target === $('#sheet')) closeSheet(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSheet(); });
+
+  /* ---------- install (GitHub version) ---------- */
+  var deferred = null;
+  function setupInstall() {
+    if (!NSRA_PWA) return;
+    var standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone;
+    if (standalone) return;
+    var ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    $('#installCard').hidden = false;
+    $('#instTxt').textContent = ios ? t('instIos') : t('instGen');
+    $('#instBtn').hidden = !deferred;
+  }
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); deferred = e; setupInstall(); });
+  $('#instBtn').addEventListener('click', function () { if (deferred) { deferred.prompt(); deferred = null; $('#installCard').hidden = true; } });
+  window.addEventListener('appinstalled', function () { $('#installCard').hidden = true; });
+  if (NSRA_PWA && 'serviceWorker' in navigator && /^https?:/.test(location.protocol)) {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+  }
+
+  /* ---------- language switch + boot ---------- */
+  function rerender() {
+    applyStatic();
+    drawRealCrit(); renderReal();
+    if (P.c) renderPractice();
+    renderDue(); if (D && current === 'dash') renderDash();
+    if (!$('#sheet').hidden) openSheet();
+    setupInstall(); updateDock();
+  }
+  $('#langBtn').addEventListener('click', function () {
+    lang = lang === 'ar' ? 'en' : 'ar'; LS.set('nsra-lang', lang); rerender();
+  });
+  rerender();
+  flush();
+})();
+</script>
+
+</body>
+</html>
