@@ -1,0 +1,15 @@
+{
+  "name": "DEVICE Neonatal Skin Risk Assessment (NSRA) Tool",
+  "short_name": "NSRA",
+  "description": "Neonatal skin risk assessment with guidelines and practice cases.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0E969C",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
