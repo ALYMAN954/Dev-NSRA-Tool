@@ -312,6 +312,9 @@ fieldset.crit legend { padding: 0 8px; font-family: var(--f-display); font-weigh
       <button class="choice" id="goPractice">
         <h2 data-i18n="pracT"></h2><p data-i18n="pracP"></p><span class="go" data-i18n="pracGo"></span>
       </button>
+      <button class="choice" id="goMine">
+        <h2 data-i18n="mineT"></h2><p data-i18n="mineP"></p><span class="go" data-i18n="mineGo"></span>
+      </button>
       <button class="choice" id="goDash">
         <h2 data-i18n="dashT"></h2><p data-i18n="dashP"></p><span class="go" data-i18n="dashGo"></span>
       </button>
@@ -377,6 +380,22 @@ fieldset.crit legend { padding: 0 8px; font-family: var(--f-display); font-weigh
     </div>
   </section>
 
+  <!-- MY RESULTS -->
+  <section class="view" id="view-mine" hidden>
+    <div class="pagehead">
+      <div><h2 data-i18n="mineH"></h2><p data-i18n="mineSub"></p></div>
+      <button class="btn small" data-home data-i18n="home"></button>
+    </div>
+    <div class="card">
+      <div class="fields">
+        <div class="field"><label for="mineName" data-i18n="nurseName"></label><input id="mineName" type="text" autocomplete="name" data-i18n-ph="phNurse"></div>
+        <div class="field"><label for="mineEmp" data-i18n="empId"></label><input id="mineEmp" type="text" autocomplete="off" data-i18n-ph="phEmp"></div>
+      </div>
+      <div class="actions"><button class="btn primary" id="mineGoBtn" data-i18n="mineShow"></button></div>
+    </div>
+    <div id="mineBody" style="margin-top:16px"></div>
+  </section>
+
   <!-- DASHBOARD -->
   <section class="view" id="view-dash" hidden>
     <div class="pagehead">
@@ -386,7 +405,14 @@ fieldset.crit legend { padding: 0 8px; font-family: var(--f-display); font-weigh
         <button class="btn small" data-home data-i18n="home"></button>
       </div>
     </div>
-    <div id="dashBody"></div>
+    <div class="card" id="pinBox" hidden>
+      <div class="fields">
+        <div class="field"><label for="pinInput" data-i18n="pinT"></label><input id="pinInput" type="password" autocomplete="off" data-i18n-ph="pinPh"></div>
+      </div>
+      <p class="privacy" id="pinMsg" style="color:var(--ext);font-weight:600"></p>
+      <div class="actions"><button class="btn primary" id="pinGo" data-i18n="pinGo"></button></div>
+    </div>
+    <div id="dashBody" style="margin-top:16px"></div>
   </section>
 
   <footer class="sitefoot">
@@ -538,7 +564,20 @@ var NSRA_PWA = true;
     dRisk: ['Risk distribution', 'توزيع المخاطر'],
     dCrit: ['Average score per criterion (1 to 4)', 'متوسط الدرجة لكل معيار (من 1 إلى 4)'],
     dDays: ['Assessments per day, last 30 days', 'التقييمات لكل يوم، آخر 30 يوماً'],
-    sumTitle: ['NSRA Summary', 'ملخص تقييم NSRA'], sumTotal: ['Total score', 'المجموع'], sumDate: ['Date', 'التاريخ']
+    sumTitle: ['NSRA Summary', 'ملخص تقييم NSRA'], sumTotal: ['Total score', 'المجموع'], sumDate: ['Date', 'التاريخ'],
+    mineT: ['My results', 'نتائجي'],
+    mineP: ['See your own submitted assessments: totals, average score and your recent patients.', 'اطّلع على تقييماتك المرسلة: العدد ومتوسط الدرجة وآخر مرضاك.'],
+    mineGo: ['Open my results →', 'افتح نتائجي ←'],
+    mineH: ['My results', 'نتائجي'],
+    mineSub: ['Enter your name and employee ID exactly as you used them when submitting.', 'أدخل اسمك ورقمك الوظيفي كما كتبتهما عند إرسال التقييمات.'],
+    mineShow: ['Show my results', 'اعرض نتائجي'],
+    mineAsk: ['Enter your name and employee ID to see your results.', 'أدخل اسمك ورقمك الوظيفي لعرض نتائجك.'],
+    mineNone: ['No assessments found for this name and employee ID.', 'لا توجد تقييمات بهذا الاسم والرقم الوظيفي.'],
+    mineCount: ['My assessments', 'تقييماتي'], mineAvg: ['My average score', 'متوسط درجاتي'], mineLast: ['Last assessment', 'آخر تقييم'],
+    mineRisk: ['My patients by risk', 'مرضاي حسب الخطورة'], mineRecent: ['Recent assessments', 'آخر التقييمات'],
+    pinT: ['Supervisor PIN', 'رمز المشرف'], pinPh: ['Enter the PIN', 'أدخل الرمز'], pinGo: ['Open dashboard', 'افتح اللوحة'],
+    pinBad: ['Incorrect PIN. Try again.', 'الرمز غير صحيح. حاول مرة أخرى.'],
+    pinLocked: ['The dashboard is locked until the supervisor PIN is set in the Apps Script (ADMIN_PIN).', 'اللوحة مقفلة حتى يُضبط رمز المشرف في Apps Script (ADMIN_PIN).']
   };
   function t(k, a, b) { var v = T[k] ? T[k][LI()] : k; return typeof v === 'function' ? v(a, b) : v; }
 
@@ -644,13 +683,14 @@ var NSRA_PWA = true;
   var current = 'home';
   function show(v) {
     current = v;
-    ['home', 'real', 'practice', 'dash'].forEach(function (n) { $('#view-' + n).hidden = n !== v; });
+    ['home', 'real', 'practice', 'mine', 'dash'].forEach(function (n) { $('#view-' + n).hidden = n !== v; });
     $('#homeTop').hidden = v === 'home';
     var showDock = v === 'real' || v === 'practice';
     $('#dock').hidden = !showDock;
     $('#caseBtn').hidden = v !== 'practice';
     closeSheet(); updateDock(); renderDue();
     if (v === 'dash') loadDash();
+    if (v === 'mine') loadMine();
     window.scrollTo(0, 0);
   }
   $('#brand').addEventListener('click', function () { show('home'); });
@@ -659,6 +699,7 @@ var NSRA_PWA = true;
   $('#goReal').addEventListener('click', function () { show('real'); });
   $('#goPractice').addEventListener('click', function () { show('practice'); if (!P.c) newCase(); });
   $('#goDash').addEventListener('click', function () { show('dash'); });
+  $('#goMine').addEventListener('click', function () { show('mine'); });
 
   /* ---------- criteria rendering (keeps state across language switches) ---------- */
   function buildCriteria(host, prefix, onChange, a, reveal) {
@@ -1006,13 +1047,61 @@ var NSRA_PWA = true;
   /* ---------- dashboard ---------- */
   var D = null;
   function dnote(k) { $('#dashBody').innerHTML = '<div class="card dnote">' + t(k) + '</div>'; }
+  var PIN = '';
+  try { PIN = sessionStorage.getItem('nsra-pin') || ''; } catch (e) {}
+  function showPin(msgKey) {
+    $('#pinBox').hidden = false; $('#dashBody').innerHTML = '';
+    $('#pinMsg').textContent = msgKey ? t(msgKey) : '';
+  }
   function loadDash() {
-    if (!NSRA_ENDPOINT) { dnote('dOff'); return; }
+    if (!NSRA_ENDPOINT) { $('#pinBox').hidden = true; dnote('dOff'); return; }
+    if (!PIN) { showPin(''); return; }
+    $('#pinBox').hidden = true;
     if (!D) dnote('dLoad');
-    fetchJson(NSRA_ENDPOINT + '?action=stats').then(function (j) {
+    fetchJson(NSRA_ENDPOINT + '?action=stats&pin=' + encodeURIComponent(PIN)).then(function (j) {
+      if (j && j.error === 'pin') { PIN = ''; D = null; try { sessionStorage.removeItem('nsra-pin'); } catch (e) {} showPin('pinBad'); return; }
+      if (j && j.error === 'locked') { D = null; dnote('pinLocked'); return; }
       if (!j || !j.ok) throw new Error('bad'); D = j; renderDash();
     }).catch(function () { if (!D) dnote('dFail'); else renderDash(); });
   }
+  $('#pinGo').addEventListener('click', function () {
+    var v = $('#pinInput').value.trim(); if (!v) return;
+    PIN = v; try { sessionStorage.setItem('nsra-pin', v); } catch (e) {}
+    $('#pinInput').value = ''; D = null; loadDash();
+  });
+  $('#pinInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('#pinGo').click(); });
+
+  /* ---------- my results ---------- */
+  var M = null;
+  function mnote(k) { $('#mineBody').innerHTML = '<div class="card dnote">' + t(k) + '</div>'; }
+  function loadMine() {
+    if (!$('#mineName').value) $('#mineName').value = LS.get('nsra-nurse') || '';
+    if (!$('#mineEmp').value) $('#mineEmp').value = LS.get('nsra-emp') || '';
+    if ($('#mineName').value.trim() && $('#mineEmp').value.trim()) fetchMine(); else mnote('mineAsk');
+  }
+  function fetchMine() {
+    var n = $('#mineName').value.trim(), e = $('#mineEmp').value.trim();
+    if (!NSRA_ENDPOINT) { mnote('dOff'); return; }
+    if (!n || !e) { mnote('mineAsk'); return; }
+    LS.set('nsra-nurse', n); LS.set('nsra-emp', e);
+    mnote('dLoad');
+    fetchJson(NSRA_ENDPOINT + '?action=mine&nurse=' + encodeURIComponent(n) + '&emp=' + encodeURIComponent(e)).then(function (j) {
+      if (!j || !j.ok) throw new Error('bad'); M = j; renderMine();
+    }).catch(function () { mnote('dFail'); });
+  }
+  function renderMine() {
+    if (!M || !M.count) { mnote('mineNone'); return; }
+    var cats = ['low', 'mod', 'high', 'ext'];
+    var h = '<div class="tiles"><div class="tile"><small>' + t('mineCount') + '</small><b>' + M.count + '</b></div><div class="tile"><small>' + t('mineAvg') + '</small><b>' + Number(M.avg).toFixed(1) + '</b></div><div class="tile"><small>' + t('mineLast') + '</small><b style="font-size:1.1rem">' + fmtDate(M.last) + '</b></div></div>';
+    h += '<div class="card panel"><h3>' + t('mineRisk') + '</h3><div class="stack">' + cats.map(function (k) { return '<i class="' + k + '" style="width:' + (M.cats[k] / M.count * 100) + '%" title="' + M.cats[k] + '"></i>'; }).join('') + '</div>' +
+      '<div class="legend">' + cats.map(function (k) { return '<span class="' + k + '"><i></i>' + t(GUIDE[k].label) + ': <b>' + M.cats[k] + '</b></span>'; }).join('') + '</div></div>';
+    h += '<div class="card panel"><h3>' + t('mineRecent') + '</h3><div class="due-list">' + M.items.map(function (x) {
+      var k = categoryOf(x.total).key;
+      return '<div class="due-row"><span class="mrn">MRN ' + esc(x.mrn) + '</span><span class="pill ' + k + '">' + t(GUIDE[k].label) + '</span><b>' + x.total + '</b><span class="cd">' + fmtDate(x.at) + '</span></div>';
+    }).join('') + '</div></div>';
+    $('#mineBody').innerHTML = h;
+  }
+  $('#mineGoBtn').addEventListener('click', fetchMine);
   function renderDash() {
     if (!D || !D.total) { dnote('dNone'); return; }
     var cats = ['low', 'mod', 'high', 'ext'], tot = D.total;
@@ -1073,6 +1162,7 @@ var NSRA_PWA = true;
     drawRealCrit(); renderReal();
     if (P.c) renderPractice();
     renderDue(); if (D && current === 'dash') renderDash();
+    if (M && current === 'mine') renderMine();
     if (!$('#sheet').hidden) openSheet();
     setupInstall(); updateDock();
   }
