@@ -43,6 +43,19 @@
   --f-display:'Noto Naskh Arabic', 'Fraunces', Georgia, serif;
   --f-body:'IBM Plex Sans Arabic', 'Figtree', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
+
+/* cinematic palettes */
+body { background-image: radial-gradient(900px 420px at 85% -8%, var(--glow, transparent), transparent 70%), radial-gradient(700px 400px at 0% 105%, var(--glow, transparent), transparent 70%); background-attachment: fixed; }
+:root[data-style="gold"] { --bg:#F7F1E4; --bg2:#EFE5CE; --surface:#FFFDF8; --ink:#2B2415; --muted:#6F6347; --line:#E3D6B4; --accent:#8A6212; --accent-ink:#FFFFFF; --accent-soft:#F3E6C2; --lav:#A0521F; --lav-soft:#F6E3D3; --glow:rgba(201,150,40,.22); }
+:root[data-style="gold"][data-theme="dark"] { --bg:#14110A; --bg2:#1C170D; --surface:#231D10; --ink:#F3EAD2; --muted:#B8A987; --line:#3B3220; --accent:#E0B24F; --accent-ink:#231A05; --accent-soft:#3A2F12; --lav:#E08A52; --lav-soft:#3E2616; --glow:rgba(224,178,79,.16); --shadow:0 6px 24px rgba(0,0,0,.45); }
+:root[data-style="cine"] { --bg:#E8F1F2; --bg2:#D9E9EC; --surface:#FFFFFF; --ink:#102A30; --muted:#4F6E76; --line:#C6DDE2; --accent:#0E6F7A; --accent-ink:#FFFFFF; --accent-soft:#D2EBEE; --lav:#C2561B; --lav-soft:#FBE5D6; --glow:rgba(240,138,75,.20); }
+:root[data-style="cine"][data-theme="dark"] { --bg:#0A1519; --bg2:#0F1E24; --surface:#14262D; --ink:#E6F1F3; --muted:#8FB0B8; --line:#234450; --accent:#3FC1CF; --accent-ink:#04252A; --accent-soft:#123A42; --lav:#F08A4B; --lav-soft:#3E2414; --glow:rgba(240,138,75,.14); --shadow:0 6px 24px rgba(0,0,0,.45); }
+:root[data-style="aurora"] { --bg:#EEF3EE; --bg2:#E1ECE4; --surface:#FFFFFF; --ink:#15281F; --muted:#566E60; --line:#CFE0D5; --accent:#23805A; --accent-ink:#FFFFFF; --accent-soft:#D8EFE2; --lav:#6B4FC0; --lav-soft:#E8E2F8; --glow:rgba(107,79,192,.16); }
+:root[data-style="aurora"][data-theme="dark"] { --bg:#0B1612; --bg2:#102019; --surface:#152B22; --ink:#E4F3EA; --muted:#8DB3A0; --line:#25443A; --accent:#52D6A0; --accent-ink:#04261A; --accent-soft:#123C2D; --lav:#B39BFF; --lav-soft:#2D2650; --glow:rgba(179,155,255,.15); --shadow:0 6px 24px rgba(0,0,0,.45); }
+:root[data-style="rose"] { --bg:#F6EEF0; --bg2:#EFE0E5; --surface:#FFFFFF; --ink:#2E1B24; --muted:#7A5B68; --line:#E6D0D8; --accent:#A23B62; --accent-ink:#FFFFFF; --accent-soft:#F5DCE5; --lav:#5B5BB5; --lav-soft:#E6E6F7; --glow:rgba(162,59,98,.16); }
+:root[data-style="rose"][data-theme="dark"] { --bg:#170E13; --bg2:#20141B; --surface:#2A1A23; --ink:#F6E6EC; --muted:#BE95A6; --line:#45283A; --accent:#F08AB0; --accent-ink:#2E0A1B; --accent-soft:#44202F; --lav:#A9A9F2; --lav-soft:#272654; --glow:rgba(240,138,176,.14); --shadow:0 6px 24px rgba(0,0,0,.45); }
+.toast { position: fixed; inset-inline: 0; bottom: 92px; margin: auto; width: max-content; max-width: 90vw; z-index: 60; padding: 10px 18px; border-radius: 999px; background: var(--ink); color: var(--bg); font-weight: 600; box-shadow: var(--shadow); }
+.del { min-height: 36px; padding: 0 12px; border-radius: 10px; border: 1.5px solid var(--ext); background: transparent; color: var(--ext); font-weight: 600; }
 * { box-sizing: border-box; }
 html, body { min-height: 100%; }
 body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55; -webkit-text-size-adjust: 100%; }
@@ -333,6 +346,7 @@ fieldset.crit legend { padding: 0 8px; font-family: var(--f-display); font-weigh
     <div class="bar-actions">
       <button class="btn small" id="homeTop" hidden data-i18n="home"></button>
       <button class="btn small" id="langBtn" data-i18n-aria="langAria"></button>
+      <button class="btn small" id="styleBtn" data-i18n-aria="styleAria">🎬</button>
       <button class="btn small" id="themeBtn" data-i18n-aria="themeAria"></button>
     </div>
   </div>
@@ -521,7 +535,7 @@ fieldset.crit legend { padding: 0 8px; font-family: var(--f-display); font-weigh
 /* Results receiver: paste your Google Apps Script web app URL between the quotes. */
 var NSRA_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzGvq4w6NEfx10_iDUS21f9aFH9Np3hxmaxsYcZsMsOQDoefxnB64q_leudWyLQv0kV2g/exec';
 var NSRA_PWA = true;
-var APP_VERSION = '2026-10-29.1';
+var APP_VERSION = '2026-10-29.2';
 (function () {
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
@@ -544,7 +558,7 @@ var APP_VERSION = '2026-10-29.1';
     themeAria: ['Switch between day and night mode', 'التبديل بين الوضع النهاري والليلي'],
     langBtn: ['العربية', 'English'],
     night: ['Night mode', 'الوضع الليلي'], day: ['Day mode', 'الوضع النهاري'],
-    eyebrow: ['Neonatal Intensive Care · Prematurity Unit', 'العناية المركزة لحديثي الولادة · قسم الخدّج'],
+    eyebrow: ['Neonatal Intensive Care Unit (NICU)', 'وحدة العناية المركزة لحديثي الولادة (NICU)'],
     h1: ['DEVICE Neonatal <span>Skin Risk</span> Assessment (NSRA) Tool', 'أداة DEVICE لتقييم <span>مخاطر الجلد</span> لحديثي الولادة (NSRA)'],
     lead: ['Score eight criteria, see the risk category at once, and follow the matching assessment, implementation and documentation guidelines.', 'قيّم ثمانية معايير، وشاهد فئة الخطورة فوراً، واتبع إرشادات التقييم والتنفيذ والتوثيق المناسبة لها.'],
     createdBy: ['Program created by', 'منشئ البرنامج'],
@@ -645,10 +659,13 @@ var APP_VERSION = '2026-10-29.1';
     dDays: ['Assessments per day (30 days up to the end date)', 'التقييمات لكل يوم (30 يوماً حتى تاريخ النهاية)'],
     sumTitle: ['NSRA Summary', 'ملخص تقييم NSRA'], sumTotal: ['Total score', 'المجموع'], sumDate: ['Date', 'التاريخ'],
     printBtn: ['Print assessment', 'طباعة التقييم'],
+    styleAria: ['Change look', 'تغيير التصميم'], styleDef: ['Calm Teal', 'تركوازي هادئ'], styleGold: ['Golden Hour', 'الساعة الذهبية'], styleCine: ['Teal & Orange', 'تركوازي وبرتقالي'], styleAur: ['Aurora', 'الشفق'], styleRose: ['Rose Dusk', 'وردي الغروب'],
+    delBtn: ['Delete', 'حذف'], delConfirm: ['Delete this assessment? It will be moved to the Deleted sheet.', 'حذف هذا التقييم؟ سيُنقل إلى ورقة المحذوفات.'], delFail: ['Could not delete. Try again.', 'تعذر الحذف. حاول مرة أخرى.'], delOk: ['Deleted', 'تم الحذف'],
+    recsT: ['Records (newest 50)', 'السجلات (أحدث 50)'],
     mineFrom: ['From', 'من تاريخ'], mineTo: ['To', 'إلى تاريخ'],
     minePrint: ['Print my report', 'اطبع تقريري'],
     dNurseL: ['Nurse', 'الممرض'], dAllNurses: ['All nurses', 'كل الممرضين'],
-    dApply: ['Apply', 'تطبيق'], dExport: ['Export CSV', 'تصدير CSV'], dPrint: ['Print report', 'طباعة التقرير'],
+    dApply: ['Apply', 'تطبيق'], dExport: ['Export Excel', 'تصدير Excel'], dPrint: ['Print report', 'طباعة التقرير'],
     dNursesT: ['Nurses (tap a nurse to open)', 'الممرضون (اضغط على ممرض لفتح تقريره)'],
     dAssess: ['assessments', 'تقييم'], dAvgS: ['avg', 'المتوسط'], dHighExt: ['High/Extreme', 'عالية/شديدة'],
     updT: ['A new version is available.', 'يوجد إصدار جديد من التطبيق.'], updBtn: ['Update now', 'حدّث الآن'],
@@ -753,6 +770,13 @@ var APP_VERSION = '2026-10-29.1';
   function effTheme() { return root.getAttribute('data-theme') || (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); }
   function paintBtns() { $('#themeBtn').textContent = effTheme() === 'dark' ? t('day') : t('night'); $('#langBtn').textContent = t('langBtn'); }
   var sv = LS.get('nsra-theme'); if (sv === 'dark' || sv === 'light') root.setAttribute('data-theme', sv);
+  if (!root.getAttribute('data-theme')) root.setAttribute('data-theme', effTheme());
+  var STYLES = ['', 'gold', 'cine', 'aurora', 'rose'], SNAMES = ['styleDef', 'styleGold', 'styleCine', 'styleAur', 'styleRose'];
+  var si = Math.max(0, STYLES.indexOf(LS.get('nsra-style') || ''));
+  function applyStyle() { if (STYLES[si]) root.setAttribute('data-style', STYLES[si]); else root.removeAttribute('data-style'); }
+  applyStyle();
+  function toast(m) { var d = document.createElement('div'); d.className = 'toast'; d.textContent = m; document.body.appendChild(d); setTimeout(function () { d.remove(); }, 1600); }
+  $('#styleBtn').addEventListener('click', function () { si = (si + 1) % STYLES.length; applyStyle(); LS.set('nsra-style', STYLES[si]); toast('🎬 ' + t(SNAMES[si])); });
   $('#themeBtn').addEventListener('click', function () {
     var n = effTheme() === 'dark' ? 'light' : 'dark';
     root.setAttribute('data-theme', n); LS.set('nsra-theme', n); paintBtns();
@@ -1171,19 +1195,53 @@ var APP_VERSION = '2026-10-29.1';
   function fmtFull(ms) { try { return new Date(ms).toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }); } catch (e) { return new Date(ms).toLocaleString(); } }
   function fmtDay(ms) { return ms ? new Date(ms).toLocaleDateString('en-GB') : '—'; }
   var RISK_EN = { low: 'Low', mod: 'Moderate', high: 'High', ext: 'Extreme' };
-  function downloadCSV(name, rows) {
-    var csv = '﻿' + rows.map(function (r) { return r.map(function (c) { return '"' + String(c == null ? '' : c).replace(/"/g, '""') + '"'; }).join(','); }).join('\r\n');
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
-    a.download = name; document.body.appendChild(a); a.click();
-    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 800);
+  var CRCT = null;
+  function crc32(u) { if (!CRCT) { CRCT = []; for (var n = 0; n < 256; n++) { var c = n; for (var k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; CRCT[n] = c >>> 0; } } var r = 0xFFFFFFFF; for (var i = 0; i < u.length; i++) r = CRCT[(r ^ u[i]) & 255] ^ (r >>> 8); return (r ^ 0xFFFFFFFF) >>> 0; }
+  function zipStore(files) {
+    var enc = new TextEncoder(), parts = [], cen = [], off = 0;
+    function u16(v) { return [v & 255, (v >> 8) & 255]; } function u32(v) { return [v & 255, (v >> 8) & 255, (v >> 16) & 255, (v >>> 24) & 255]; }
+    files.forEach(function (f) {
+      var nm = enc.encode(f[0]), d = enc.encode(f[1]), c = crc32(d);
+      var lh = [0x50, 0x4b, 3, 4].concat(u16(20), u16(0x0800), u16(0), u16(0), u16(0x21), u32(c), u32(d.length), u32(d.length), u16(nm.length), u16(0));
+      parts.push(new Uint8Array(lh), nm, d);
+      cen.push(new Uint8Array([0x50, 0x4b, 1, 2].concat(u16(20), u16(20), u16(0x0800), u16(0), u16(0), u16(0x21), u32(c), u32(d.length), u32(d.length), u16(nm.length), u16(0), u16(0), u16(0), u16(0), u32(0), u32(off))), nm);
+      off += lh.length + nm.length + d.length;
+    });
+    var cl = 0; cen.forEach(function (x) { cl += x.length; });
+    parts = parts.concat(cen, [new Uint8Array([0x50, 0x4b, 5, 6, 0, 0, 0, 0].concat(u16(files.length), u16(files.length), u32(cl), u32(off), u16(0)))]);
+    return new Blob(parts, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  }
+  function xesc(v) { return String(v).replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ''); }
+  function colName(i) { var n = ''; i++; while (i > 0) { var m = (i - 1) % 26; n = String.fromCharCode(65 + m) + n; i = Math.floor((i - 1) / 26); } return n; }
+  function makeXlsx(aoa) {
+    var rowsXml = aoa.map(function (r, ri) {
+      return '<row r="' + (ri + 1) + '">' + r.map(function (v, ci) {
+        var ref = colName(ci) + (ri + 1);
+        if (typeof v === 'number') return '<c r="' + ref + '"><v>' + v + '</v></c>';
+        return '<c r="' + ref + '" t="inlineStr"' + (ri === 0 ? ' s="1"' : '') + '><is><t xml:space="preserve">' + xesc(v == null ? '' : v) + '</t></is></c>';
+      }).join('') + '</row>';
+    }).join('');
+    var cols = aoa[0].map(function (h, i) { return '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + (i === 2 ? 22 : 14) + '" customWidth="1"/>'; }).join('');
+    var H = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n';
+    return zipStore([
+      ['[Content_Types].xml', H + '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>'],
+      ['_rels/.rels', H + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'],
+      ['xl/workbook.xml', H + '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="NSRA Results" sheetId="1" r:id="rId1"/></sheets></workbook>'],
+      ['xl/_rels/workbook.xml.rels', H + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>'],
+      ['xl/styles.xml', H + '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>'],
+      ['xl/worksheets/sheet1.xml', H + '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>' + cols + '</cols><sheetData>' + rowsXml + '</sheetData></worksheet>']
+    ]);
   }
   function exportCSV(rows) {
-    var out = [['Date and time', 'Nurse name', 'Employee ID', 'MRN'].concat(CRITERIA.map(function (c) { return c.name[0]; })).concat(['Total score', 'Risk category'])];
+    var out = [['Date', 'Time', 'Nurse name', 'Employee ID', 'MRN'].concat(CRITERIA.map(function (c) { return c.name[0]; })).concat(['Total score', 'Risk category'])];
     rows.slice().sort(function (x, y) { return x.at - y.at; }).forEach(function (r) {
-      out.push([fmtFull(r.at), r.nurse, r.emp, r.mrn].concat(r.s).concat([r.t, RISK_EN[categoryOf(r.t).key] + ' Risk']));
+      var d = new Date(r.at), z = function (n) { return (n < 10 ? '0' : '') + n; };
+      out.push([ymd(d), z(d.getHours()) + ':' + z(d.getMinutes()), r.nurse, String(r.emp), String(r.mrn)].concat(r.s).concat([r.t, RISK_EN[categoryOf(r.t).key] + ' Risk']));
     });
-    downloadCSV('NSRA-results-' + ymd(new Date()) + '.csv', out);
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(makeXlsx(out));
+    a.download = 'NSRA-results-' + ymd(new Date()) + '.xlsx'; document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 800);
   }
   function printReport(o) {
     var rows = o.rows.slice().sort(function (x, y) { return x.at - y.at; }), S = summarize(rows);
@@ -1200,6 +1258,12 @@ var APP_VERSION = '2026-10-29.1';
     try { window.print(); } catch (e) {}
   }
 
+  function delEntry(id, auth, done) {
+    if (!confirm(t('delConfirm'))) return;
+    fetchJson(NSRA_ENDPOINT + '?action=delete&id=' + encodeURIComponent(id) + auth).then(function (j) {
+      if (!j || !j.ok) throw new Error('x'); toast(t('delOk')); done(id);
+    }).catch(function () { toast(t('delFail')); });
+  }
   /* ---------- dashboard (supervisor PIN) ---------- */
   var D = null, DN = '';
   function dnote(k) { $('#dashBody').innerHTML = '<div class="card dnote">' + t(k) + '</div>'; }
@@ -1259,7 +1323,14 @@ var APP_VERSION = '2026-10-29.1';
     h += '<div class="card panel"><h3>' + t('dDays') + '</h3><div class="days">' + days.map(function (x) {
       return '<i class="' + (x.n ? '' : 'zero') + '" style="height:' + (x.n ? Math.max(6, x.n / mx * 100) : 2) + '%" title="' + x.d + ': ' + x.n + '"></i>';
     }).join('') + '</div><div class="axis"><span>' + days[0].d.slice(5) + '</span><span>' + days[days.length - 1].d.slice(5) + '</span></div></div>';
+    h += '<div class="card panel"><h3>' + t('recsT') + '</h3><div class="due-list">' + rows.slice().sort(function (x, y) { return y.at - x.at; }).slice(0, 50).map(function (x) {
+      var k = categoryOf(x.t).key;
+      return '<div class="due-row"><span class="mrn">MRN ' + esc(x.mrn) + '</span><small>' + esc(x.nurse) + '</small><span class="pill ' + k + '">' + t(GUIDE[k].label) + '</span><b>' + x.t + '</b><span class="cd">' + fmtDate(x.at) + '</span><button class="del" data-did="' + esc(x.id) + '">' + t('delBtn') + '</button></div>';
+    }).join('') + '</div></div>';
     $('#dashBody').innerHTML = h;
+    $$('[data-did]').forEach(function (b) { b.addEventListener('click', function () {
+      delEntry(b.getAttribute('data-did'), '&pin=' + encodeURIComponent(PIN), function (id) { D = D.filter(function (r) { return r.id !== id; }); renderDash(); });
+    }); });
     $$('[data-nk]').forEach(function (b) { b.addEventListener('click', function () { DN = b.getAttribute('data-nk'); $('#dNurse').value = DN; renderDash(); window.scrollTo(0, 0); }); });
   }
   $('#pinGo').addEventListener('click', function () {
@@ -1305,9 +1376,12 @@ var APP_VERSION = '2026-10-29.1';
       '<div class="legend">' + cats.map(function (k) { return '<span class="' + k + '"><i></i>' + t(GUIDE[k].label) + ': <b>' + S.cats[k] + '</b></span>'; }).join('') + '</div></div>';
     h += '<div class="card panel"><h3>' + t('mineRecent') + '</h3><div class="due-list">' + M.slice().sort(function (x, y) { return y.at - x.at; }).slice(0, 100).map(function (x) {
       var k = categoryOf(x.t).key;
-      return '<div class="due-row"><span class="mrn">MRN ' + esc(x.mrn) + '</span><span class="pill ' + k + '">' + t(GUIDE[k].label) + '</span><b>' + x.t + '</b><span class="cd">' + fmtDate(x.at) + '</span></div>';
+      return '<div class="due-row"><span class="mrn">MRN ' + esc(x.mrn) + '</span><span class="pill ' + k + '">' + t(GUIDE[k].label) + '</span><b>' + x.t + '</b><span class="cd">' + fmtDate(x.at) + '</span><button class="del" data-mid="' + esc(x.id) + '">' + t('delBtn') + '</button></div>';
     }).join('') + '</div></div>';
     $('#mineBody').innerHTML = h;
+    $$('[data-mid]').forEach(function (b) { b.addEventListener('click', function () {
+      delEntry(b.getAttribute('data-mid'), '&nurse=' + encodeURIComponent($('#mineName').value.trim()) + '&emp=' + encodeURIComponent($('#mineEmp').value.trim()), function (id) { M = M.filter(function (r) { return r.id !== id; }); renderMine(); });
+    }); });
     $('#minePrint').addEventListener('click', function () {
       var rg = rangeMs('mineFrom', 'mineTo');
       printReport({ title: 'Nurse Assessment Report', nurse: $('#mineName').value.trim(), emp: $('#mineEmp').value.trim(), rows: M, from: rg.from, to: rg.to, showNurse: false });
