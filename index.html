@@ -434,6 +434,13 @@ fieldset.crit legend { padding: 0 8px; font-family: var(--f-display); font-weigh
       <div><h2 data-i18n="pracH"></h2><p data-i18n="pracSub"></p></div>
       <button class="btn small" data-home data-i18n="home"></button>
     </div>
+    <div class="card" id="pracWho">
+      <div class="fields">
+        <div class="field"><label for="pNurse" data-i18n="nurseName"></label><input id="pNurse" type="text" autocomplete="name" data-i18n-ph="phNurse"></div>
+        <div class="field"><label for="pEmp" data-i18n="empId"></label><input id="pEmp" type="text" autocomplete="off" data-i18n-ph="phEmp"></div>
+      </div>
+      <p class="rangeline" style="margin-top:8px" data-i18n="pHint"></p>
+    </div>
     <div class="card">
       <div class="eyebrow" data-i18n="diffT"></div>
       <div class="chips" id="diffChips" role="group" data-i18n-aria="diffT">
@@ -490,6 +497,10 @@ fieldset.crit legend { padding: 0 8px; font-family: var(--f-display); font-weigh
       <div class="actions"><button class="btn primary" id="pinGo" data-i18n="pinGo"></button></div>
     </div>
     <div class="card" id="dashFilters" hidden>
+      <div class="chips" id="dashMode" role="group" style="margin-bottom:14px">
+        <button class="chip" data-m="real" aria-pressed="true" data-i18n="modeReal"></button>
+        <button class="chip" data-m="prac" aria-pressed="false" data-i18n="modePrac"></button>
+      </div>
       <div class="fields">
         <div class="field"><label for="dFrom" data-i18n="mineFrom"></label><input id="dFrom" type="date"></div>
         <div class="field"><label for="dTo" data-i18n="mineTo"></label><input id="dTo" type="date"></div>
@@ -535,7 +546,7 @@ fieldset.crit legend { padding: 0 8px; font-family: var(--f-display); font-weigh
 /* Results receiver: paste your Google Apps Script web app URL between the quotes. */
 var NSRA_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzGvq4w6NEfx10_iDUS21f9aFH9Np3hxmaxsYcZsMsOQDoefxnB64q_leudWyLQv0kV2g/exec';
 var NSRA_PWA = true;
-var APP_VERSION = '2026-10-29.2';
+var APP_VERSION = '2026-10-30.1';
 (function () {
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
@@ -647,7 +658,7 @@ var APP_VERSION = '2026-10-29.2';
     dockCase: [function (n, s) { return 'Case #' + n + ' · running score ' + s; }, function (n, s) { return 'الحالة ' + n + ' · المجموع الحالي ' + s; }],
     dockChecked: ['Case checked', 'تم تصحيح الحالة'], dockReview: ['Review your answers above', 'راجع إجاباتك أعلاه'],
     dashH: ['Unit dashboard', 'لوحة نتائج القسم'],
-    dashSub: ['Unit totals, nurse list and printable reports. Protected by the supervisor PIN.', 'إجماليات القسم وقائمة الممرضين وتقارير قابلة للطباعة. محمية برمز المشرف.'],
+    dashSub: ['Unit totals, practice results, nurse list and printable reports. Protected by the supervisor PIN.', 'إجماليات القسم وقائمة الممرضين وتقارير قابلة للطباعة. محمية برمز المشرف.'],
     refresh: ['Refresh', 'تحديث'],
     dOff: ['The dashboard works after the results link is connected in the GitHub version.', 'تعمل اللوحة بعد ربط رابط النتائج في نسخة GitHub.'],
     dLoad: ['Loading results…', 'جارٍ تحميل النتائج…'],
@@ -659,7 +670,13 @@ var APP_VERSION = '2026-10-29.2';
     dDays: ['Assessments per day (30 days up to the end date)', 'التقييمات لكل يوم (30 يوماً حتى تاريخ النهاية)'],
     sumTitle: ['NSRA Summary', 'ملخص تقييم NSRA'], sumTotal: ['Total score', 'المجموع'], sumDate: ['Date', 'التاريخ'],
     printBtn: ['Print assessment', 'طباعة التقييم'],
-    styleAria: ['Change look', 'تغيير التصميم'], styleDef: ['Calm Teal', 'تركوازي هادئ'], styleGold: ['Golden Hour', 'الساعة الذهبية'], styleCine: ['Teal & Orange', 'تركوازي وبرتقالي'], styleAur: ['Aurora', 'الشفق'], styleRose: ['Rose Dusk', 'وردي الغروب'],
+    modeReal: ['Real assessments', 'التقييمات الحقيقية'], modePrac: ['Practice cases', 'حالات التدريب'],
+    pAttempts: ['Practice attempts', 'محاولات التدريب'], pAvg: ['Avg correct criteria (of 8)', 'متوسط المعايير الصحيحة (من 8)'], pMatch: ['Category match', 'تطابق التصنيف'],
+    pCritAcc: ['Accuracy per criterion', 'الدقة لكل معيار'], pNursesT: ['Nurses practicing (tap to open)', 'الممرضون المتدربون (اضغط لفتح تقريره)'],
+    pRecsT: ['Practice attempts (newest 50)', 'محاولات التدريب (أحدث 50)'], pTimes: ['attempts', 'محاولة'], pAvgS: ['avg', 'المتوسط'], pMatchS: ['match', 'تطابق'],
+    pHint: ['Enter your name and employee ID so your practice result is recorded for your supervisor.', 'أدخل اسمك ورقمك الوظيفي لتُسجَّل نتيجة تدريبك لدى المشرف.'],
+    pSaved: ['Practice result recorded', 'تم تسجيل نتيجة التدريب'], pPrintT: ['Practice Report', 'تقرير التدريب'],
+    styleAria: ['Change look', 'تغيير التصميم'], styleDef: ['Calm Teal', 'تركوازي هادئ'], styleGold: ['Golden Hour', 'الساعة الذهبية'], styleCine: ['Teal & Orange', 'تركوازي وبرتقالي'], styleAur: ['Aurora', 'الشفق'], styleRose: ['Rose Dusk', 'وردي الغروب'], styleScene: ['Scene', 'مشهد'],
     delBtn: ['Delete', 'حذف'], delConfirm: ['Delete this assessment? It will be moved to the Deleted sheet.', 'حذف هذا التقييم؟ سيُنقل إلى ورقة المحذوفات.'], delFail: ['Could not delete. Try again.', 'تعذر الحذف. حاول مرة أخرى.'], delOk: ['Deleted', 'تم الحذف'],
     recsT: ['Records (newest 50)', 'السجلات (أحدث 50)'],
     mineFrom: ['From', 'من تاريخ'], mineTo: ['To', 'إلى تاريخ'],
@@ -772,14 +789,28 @@ var APP_VERSION = '2026-10-29.2';
   var sv = LS.get('nsra-theme'); if (sv === 'dark' || sv === 'light') root.setAttribute('data-theme', sv);
   if (!root.getAttribute('data-theme')) root.setAttribute('data-theme', effTheme());
   var STYLES = ['', 'gold', 'cine', 'aurora', 'rose'], SNAMES = ['styleDef', 'styleGold', 'styleCine', 'styleAur', 'styleRose'];
-  var si = Math.max(0, STYLES.indexOf(LS.get('nsra-style') || ''));
-  function applyStyle() { if (STYLES[si]) root.setAttribute('data-style', STYLES[si]); else root.removeAttribute('data-style'); }
+  var TOK = ['bg', 'bg2', 'surface', 'ink', 'muted', 'line', 'accent', 'accent-ink', 'accent-soft', 'lav', 'lav-soft', 'glow'];
+  var si = parseInt(LS.get('nsra-sn'), 10); if (isNaN(si) || si < 0) si = 0;
+  function genTokens(n, dark) {
+    var h = Math.round((n * 137.508) % 360), h2 = (h + [150, 180, 210][n % 3]) % 360;
+    function c(hh, ss, ll, a) { return a == null ? 'hsl(' + hh + ',' + ss + '%,' + ll + '%)' : 'hsla(' + hh + ',' + ss + '%,' + ll + '%,' + a + ')'; }
+    return dark
+      ? [c(h, 35, 7), c(h, 32, 10), c(h, 30, 13), c(h, 35, 92), c(h, 18, 68), c(h, 28, 23), c(h, 70, 62), c(h, 60, 10), c(h, 45, 20), c(h2, 75, 72), c(h2, 40, 22), c(h2, 80, 60, .15)]
+      : [c(h, 28, 94), c(h, 28, 90), '#FFFFFF', c(h, 45, 14), c(h, 18, 38), c(h, 24, 82), c(h, 62, 30), '#FFFFFF', c(h, 45, 88), c(h2, 50, 38), c(h2, 60, 92), c(h2, 70, 55, .18)];
+  }
+  function applyStyle() {
+    TOK.forEach(function (k) { root.style.removeProperty('--' + k); });
+    if (si >= 1 && si <= 4) { root.setAttribute('data-style', STYLES[si]); return; }
+    root.removeAttribute('data-style');
+    if (si >= 5) { var v = genTokens(si, effTheme() === 'dark'); TOK.forEach(function (k, i) { root.style.setProperty('--' + k, v[i]); }); }
+  }
   applyStyle();
+  function sname(n) { return n < 5 ? t(SNAMES[n]) : t('styleScene') + ' ' + (n - 4); }
   function toast(m) { var d = document.createElement('div'); d.className = 'toast'; d.textContent = m; document.body.appendChild(d); setTimeout(function () { d.remove(); }, 1600); }
-  $('#styleBtn').addEventListener('click', function () { si = (si + 1) % STYLES.length; applyStyle(); LS.set('nsra-style', STYLES[si]); toast('🎬 ' + t(SNAMES[si])); });
+  $('#styleBtn').addEventListener('click', function () { si++; applyStyle(); LS.set('nsra-sn', String(si)); toast('🎬 ' + sname(si)); });
   $('#themeBtn').addEventListener('click', function () {
     var n = effTheme() === 'dark' ? 'light' : 'dark';
-    root.setAttribute('data-theme', n); LS.set('nsra-theme', n); paintBtns();
+    root.setAttribute('data-theme', n); LS.set('nsra-theme', n); applyStyle(); paintBtns();
   });
   function applyStatic() {
     root.lang = lang; root.dir = lang === 'ar' ? 'rtl' : 'ltr';
@@ -809,7 +840,14 @@ var APP_VERSION = '2026-10-29.2';
   $('#homeTop').addEventListener('click', function () { show('home'); });
   $$('[data-home]').forEach(function (b) { b.addEventListener('click', function () { show('home'); }); });
   $('#goReal').addEventListener('click', function () { show('real'); });
-  $('#goPractice').addEventListener('click', function () { show('practice'); if (!P.c) newCase(); });
+  $('#goPractice').addEventListener('click', function () {
+    show('practice');
+    if (!$('#pNurse').value) $('#pNurse').value = LS.get('nsra-nurse') || '';
+    if (!$('#pEmp').value) $('#pEmp').value = LS.get('nsra-emp') || '';
+    if (!P.c) newCase();
+  });
+  $('#pNurse').addEventListener('input', function () { LS.set('nsra-nurse', $('#pNurse').value.trim()); });
+  $('#pEmp').addEventListener('input', function () { LS.set('nsra-emp', $('#pEmp').value.trim()); });
   $('#goDash').addEventListener('click', function () { show('dash'); });
   $('#goMine').addEventListener('click', function () { show('mine'); });
 
@@ -1151,11 +1189,21 @@ var APP_VERSION = '2026-10-29.2';
     }
     updateDock();
   }
+  function recordPractice(right) {
+    if (!NSRA_ENDPOINT) return;
+    var n = $('#pNurse').value.trim(), e = $('#pEmp').value.trim(); if (!n || !e) return;
+    LS.set('nsra-nurse', n); LS.set('nsra-emp', e);
+    var ok = {}; CRITERIA.forEach(function (c) { ok[c.id] = P.a[c.id] === P.c.sc[c.id] ? 1 : 0; });
+    var truth = sumOf(P.c.sc).t, mine = sumOf(P.a).t;
+    var p = { kind: 'practice', id: 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), v: 1, nurse: n, empId: e, diff: P.diff, truth: truth, mine: mine, tc: categoryOf(truth).key, mc: categoryOf(mine).key, right: right, ok: ok };
+    Q.push(p); saveQ(); if (navigator.onLine !== false) flush(); toast(t('pSaved'));
+  }
   function submitPractice() {
     var right = 0;
     CRITERIA.forEach(function (c) { if (P.a[c.id] === P.c.sc[c.id]) right++; });
     P.done = true; P.right += right; P.cases++;
     P.good = right >= 7; P.msgI = rnd(0, 2); P.last = { right: right, mine: sumOf(P.a).t };
+    recordPractice(right);
     renderPractice();
     var rc = $('#pracResult .result'); if (rc && rc.scrollIntoView) rc.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
@@ -1265,7 +1313,8 @@ var APP_VERSION = '2026-10-29.2';
     }).catch(function () { toast(t('delFail')); });
   }
   /* ---------- dashboard (supervisor PIN) ---------- */
-  var D = null, DN = '';
+  var D = null, DP = null, DN = '', DM = 'real';
+  var LEVEL_KEY = { any: 'dMixed', low: 'dLow', mod: 'dMod', high: 'dHigh', ext: 'dExt' };
   function dnote(k) { $('#dashBody').innerHTML = '<div class="card dnote">' + t(k) + '</div>'; }
   var PIN = '';
   try { PIN = sessionStorage.getItem('nsra-pin') || ''; } catch (e) {}
@@ -1279,12 +1328,13 @@ var APP_VERSION = '2026-10-29.2';
     $('#pinBox').hidden = true; initDates();
     var rg = rangeMs('dFrom', 'dTo');
     dnote('dLoad');
-    fetchJson(NSRA_ENDPOINT + '?action=rows&pin=' + encodeURIComponent(PIN) + '&from=' + rg.from + '&to=' + rg.to).then(function (j) {
-      if (j && j.error === 'pin') { PIN = ''; D = null; try { sessionStorage.removeItem('nsra-pin'); } catch (e) {} showPin('pinBad'); return; }
-      if (j && j.error === 'locked') { D = null; $('#dashFilters').hidden = true; dnote('pinLocked'); return; }
+    fetchJson(NSRA_ENDPOINT + '?action=' + (DM === 'prac' ? 'prows' : 'rows') + '&pin=' + encodeURIComponent(PIN) + '&from=' + rg.from + '&to=' + rg.to).then(function (j) {
+      if (j && j.error === 'pin') { PIN = ''; D = null; DP = null; try { sessionStorage.removeItem('nsra-pin'); } catch (e) {} showPin('pinBad'); return; }
+      if (j && j.error === 'locked') { D = null; DP = null; $('#dashFilters').hidden = true; dnote('pinLocked'); return; }
       if (!j || !j.ok || !j.rows) throw new Error('bad');
-      D = j.rows; $('#dashFilters').hidden = false; fillNurses(); renderDash();
-    }).catch(function () { $('#dashFilters').hidden = !D; if (!D) dnote('dFail'); else renderDash(); });
+      if (DM === 'prac') DP = j.rows; else D = j.rows;
+      $('#dashFilters').hidden = false; fillNurses(); renderDash();
+    }).catch(function () { $('#dashFilters').hidden = false; dnote('dFail'); });
   }
   function nurseGroups(rows) {
     var g = {};
@@ -1292,13 +1342,64 @@ var APP_VERSION = '2026-10-29.2';
     return Object.keys(g).map(function (k) { return g[k]; }).sort(function (a, b) { return b.rows.length - a.rows.length; });
   }
   function fillNurses() {
-    var sel = $('#dNurse'), gs = nurseGroups(D || []);
+    var sel = $('#dNurse'), gs = nurseGroups((DM === 'prac' ? DP : D) || []);
     sel.innerHTML = '<option value="">' + t('dAllNurses') + '</option>' + gs.map(function (g) { return '<option value="' + esc(g.k) + '">' + esc(g.nurse) + ' (' + esc(g.emp) + ')</option>'; }).join('');
     if (DN && !gs.some(function (g) { return g.k === DN; })) DN = '';
     sel.value = DN;
   }
-  function curRows() { return !D ? [] : DN ? D.filter(function (r) { return nkey(r) === DN; }) : D; }
+  function curRows() { var src = DM === 'prac' ? DP : D; return !src ? [] : DN ? src.filter(function (r) { return nkey(r) === DN; }) : src; }
+  function pSummary(rows) {
+    var ok = 0, mt = 0, ns = {}, crit = [0, 0, 0, 0, 0, 0, 0, 0];
+    rows.forEach(function (r) { ok += r.right; if (r.tc === r.mc) mt++; ns[nkey(r)] = 1; r.ok.forEach(function (v, i) { crit[i] += v; }); });
+    var n = rows.length; return { n: n, avg: n ? ok / n : 0, match: n ? mt / n * 100 : 0, nurses: Object.keys(ns).length, crit: crit.map(function (v) { return n ? v / n * 100 : 0; }) };
+  }
+  function renderPrac() {
+    var rows = curRows();
+    if (!rows.length) { dnote('dNone'); return; }
+    var S = pSummary(rows), h = '';
+    if (DN) h += '<p class="rangeline" style="margin-bottom:10px">' + esc(rows[0].nurse) + ' · ID ' + esc(rows[0].emp) + '</p>';
+    h += '<div class="tiles"><div class="tile"><small>' + t('pAttempts') + '</small><b>' + S.n + '</b></div><div class="tile"><small>' + t('pAvg') + '</small><b>' + S.avg.toFixed(1) + '</b></div><div class="tile"><small>' + t('pMatch') + '</small><b>' + Math.round(S.match) + '%</b></div><div class="tile"><small>' + t('dNurses') + '</small><b>' + S.nurses + '</b></div></div>';
+    if (!DN) {
+      h += '<div class="card panel"><h3>' + t('pNursesT') + '</h3><div class="due-list">' + nurseGroups(rows).map(function (g) {
+        var sg = pSummary(g.rows), last = Math.max.apply(null, g.rows.map(function (r) { return r.at; }));
+        return '<button class="due-row nrow" data-nk="' + esc(g.k) + '"><span class="nm">' + esc(g.nurse) + '</span><small>ID ' + esc(g.emp) + '</small><span>' + sg.n + ' ' + t('pTimes') + '</span><span>' + t('pAvgS') + ' ' + sg.avg.toFixed(1) + '/8</span><span class="pill ' + (sg.match >= 70 ? 'low' : 'high') + '">' + t('pMatchS') + ' ' + Math.round(sg.match) + '%</span><span class="cd">' + fmtDate(last) + '</span></button>';
+      }).join('') + '</div></div>';
+    }
+    h += '<div class="card panel"><h3>' + t('pCritAcc') + '</h3>' + CRITERIA.map(function (c, i) {
+      return '<div class="hbar"><span>' + c.short[LI()] + '</span><div class="track"><i style="width:' + S.crit[i] + '%"></i></div><b>' + Math.round(S.crit[i]) + '%</b></div>';
+    }).join('') + '</div>';
+    h += '<div class="card panel"><h3>' + t('pRecsT') + '</h3><div class="due-list">' + rows.slice().sort(function (x, y) { return y.at - x.at; }).slice(0, 50).map(function (x) {
+      return '<div class="due-row"><span class="mrn">' + esc(x.nurse) + '</span><small>' + t(LEVEL_KEY[x.diff] || 'dMixed') + '</small><b>' + x.right + '/8</b><span class="pill ' + x.tc + '">' + t(GUIDE[x.tc].label) + '</span><span>' + x.mine + ' → ' + x.truth + '</span><span class="cd">' + fmtDate(x.at) + '</span></div>';
+    }).join('') + '</div></div>';
+    $('#dashBody').innerHTML = h;
+    $$('[data-nk]').forEach(function (b) { b.addEventListener('click', function () { DN = b.getAttribute('data-nk'); $('#dNurse').value = DN; renderDash(); window.scrollTo(0, 0); }); });
+  }
+  function exportPrac(rows) {
+    var out = [['Date', 'Time', 'Nurse name', 'Employee ID', 'Level', 'Correct total', 'Nurse total', 'Correct category', 'Nurse category', 'Criteria correct (of 8)', 'Category match'].concat(CRITERIA.map(function (c) { return c.name[0] + ' (1=correct)'; }))];
+    rows.slice().sort(function (x, y) { return x.at - y.at; }).forEach(function (r) {
+      var d = new Date(r.at), z = function (n) { return (n < 10 ? '0' : '') + n; };
+      out.push([ymd(d), z(d.getHours()) + ':' + z(d.getMinutes()), r.nurse, String(r.emp), r.diff === 'any' ? 'Mixed' : RISK_EN[r.diff], r.truth, r.mine, RISK_EN[r.tc], RISK_EN[r.mc], r.right, r.tc === r.mc ? 'Yes' : 'No'].concat(r.ok));
+    });
+    var a = document.createElement('a'); a.href = URL.createObjectURL(makeXlsx(out));
+    a.download = 'NSRA-practice-' + ymd(new Date()) + '.xlsx'; document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 800);
+  }
+  function printPrac(o) {
+    var rows = o.rows.slice().sort(function (x, y) { return x.at - y.at; }), S = pSummary(rows);
+    var head = o.nurse ? 'Nurse: <b>' + esc(o.nurse) + '</b> · Employee ID: <b>' + esc(o.emp) + '</b>' : 'All nurses';
+    var th = '<th style="width:3.5%">#</th><th style="width:11%">Date &amp; time</th>' + (o.showNurse ? '<th style="width:14%">Nurse (ID)</th>' : '') + '<th>Level</th><th>Correct /8</th><th>Correct total</th><th>Nurse total</th><th>Category match</th>' + CRITERIA.map(function (c) { return '<th>' + c.short[0] + '</th>'; }).join('');
+    var body = rows.map(function (r, i) {
+      return '<tr><td>' + (i + 1) + '</td><td>' + fmtFull(r.at) + '</td>' + (o.showNurse ? '<td class="l">' + esc(r.nurse) + ' (' + esc(r.emp) + ')</td>' : '') + '<td>' + (r.diff === 'any' ? 'Mixed' : RISK_EN[r.diff]) + '</td><td><b>' + r.right + '</b></td><td>' + r.truth + '</td><td>' + r.mine + '</td><td>' + (r.tc === r.mc ? 'Yes' : 'No') + '</td>' + r.ok.map(function (v) { return '<td>' + (v ? '✓' : '✗') + '</td>'; }).join('') + '</tr>';
+    }).join('');
+    $('#printArea').innerHTML =
+      '<div class="pr-wrap"><div class="ps-head"><img src="icon-512.png?v=4" alt="" onerror="this.style.display=\'none\'"><div><h1>Practice Cases Report</h1><p>' + head + ' · Period: ' + fmtDay(o.from) + ' – ' + fmtDay(o.to) + ' · Printed: ' + fmtFull(Date.now()) + '</p></div></div>' +
+      '<div class="pr-sum"><div><b>' + S.n + '</b>Attempts</div><div><b>' + S.avg.toFixed(1) + '</b>Avg correct /8</div><div><b>' + Math.round(S.match) + '%</b>Category match</div><div><b>' + S.nurses + '</b>Nurses</div><div><b>' + Math.round(S.crit.reduce(function (a, v) { return a + v; }, 0) / 8) + '%</b>Overall criteria accuracy</div></div>' +
+      '<table class="pr-tbl"><thead><tr>' + th + '</tr></thead><tbody>' + body + '</tbody></table></div>' +
+      '<div class="pr-foot"><span>DEVICE Neonatal Skin Risk Assessment (NSRA) Tool</span><span>Program created by <b>Abdallah Elaydi</b> · © 2026</span></div>';
+    try { window.print(); } catch (e) {}
+  }
   function renderDash() {
+    if (DM === 'prac') { renderPrac(); return; }
     var rows = curRows();
     if (!rows.length) { dnote('dNone'); return; }
     var S = summarize(rows), cats = ['low', 'mod', 'high', 'ext'], h = '';
@@ -1339,12 +1440,17 @@ var APP_VERSION = '2026-10-29.2';
     $('#pinInput').value = ''; D = null; loadDash();
   });
   $('#pinInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('#pinGo').click(); });
-  $('#dashRefresh').addEventListener('click', function () { D = null; loadDash(); });
+  $('#dashRefresh').addEventListener('click', function () { D = null; DP = null; loadDash(); });
   $('#dApply').addEventListener('click', function () { loadDash(); });
   $('#dNurse').addEventListener('change', function () { DN = $('#dNurse').value; renderDash(); });
-  $('#dExport').addEventListener('click', function () { var r = curRows(); if (r.length) exportCSV(r); });
+  $('#dExport').addEventListener('click', function () { var r = curRows(); if (r.length) { if (DM === 'prac') exportPrac(r); else exportCSV(r); } });
+  $$('#dashMode .chip').forEach(function (b) { b.addEventListener('click', function () {
+    DM = b.dataset.m; $$('#dashMode .chip').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+    loadDash();
+  }); });
   $('#dPrint').addEventListener('click', function () {
     var r = curRows(); if (!r.length) return; var rg = rangeMs('dFrom', 'dTo');
+    if (DM === 'prac') { printPrac({ rows: r, nurse: DN ? r[0].nurse : '', emp: DN ? r[0].emp : '', from: rg.from, to: rg.to, showNurse: !DN }); return; }
     printReport({ title: DN ? 'Nurse Assessment Report' : 'Unit Assessment Report', nurse: DN ? r[0].nurse : '', emp: DN ? r[0].emp : '', rows: r, from: rg.from, to: rg.to, showNurse: !DN });
   });
 
